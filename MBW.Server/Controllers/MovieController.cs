@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+﻿using MBW.Server.Models;
+using Microsoft.AspNetCore.Mvc;
 
 namespace MBW.Server.Controllers
 {
@@ -8,19 +7,21 @@ namespace MBW.Server.Controllers
     [ApiController]
     public class MovieController : ControllerBase
     {
-        // GET: api/<MovieController>
+        // Dummy movies
+        List<Movie> movies = new List<Movie>
+        {
+            new Movie("The Matrix", 136) { Id = 1 },
+            new Movie("Inception", 148) { Id = 2 },
+            new Movie("Interstellar", 169) { Id = 3 },
+            new Movie("The Dark Knight", 152) { Id = 4 },
+            new Movie("Fight Club", 139) { Id = 5 }
+        };
+        
+        // GET: api/movie
         [HttpGet]
-        public IEnumerable<string> Get()
+        public List<Movie> Get()
         {
-            return new string[] { "value1", "value2" };
+            return movies;
         }
-
-        // GET api/<MovieController>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
     }
 }
