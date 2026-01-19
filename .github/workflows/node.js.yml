@@ -22,16 +22,16 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: npm
-        cache-dependency-path: client/package-lock.json
+        cache-dependency-path: mbw.client/package-lock.json
 
     - name: Install dependencies
       run: npm ci
-      working-directory: client
+      working-directory: mbw.client
 
     - name: Build
       run: npm run build --if-present
-      working-directory: client
+      working-directory: mbw.client
 
     - name: Test
       run: npm test
-      working-directory: client
+      working-directory: mbw.client
