@@ -3,7 +3,9 @@
 		<TargetFramework>net10.0</TargetFramework>
 		<Nullable>enable</Nullable>
 		<ImplicitUsings>enable</ImplicitUsings>
-		<SpaRoot>..\mbw.client</SpaRoot> <SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand> <SpaProxyServerUrl>https://localhost:52682</SpaProxyServerUrl>
+		<SpaRoot>..\mbw.client</SpaRoot>
+		<SpaProxyLaunchCommand>npm run dev</SpaProxyLaunchCommand>
+		<SpaProxyServerUrl>https://localhost:52682</SpaProxyServerUrl>
 	</PropertyGroup>
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.1" />
