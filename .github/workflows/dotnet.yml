@@ -20,10 +20,10 @@ jobs:
         include-prerelease: true
 
     - name: Restore backend
-      run: dotnet restore mbw.server/mbw.server.csproj
+      run: dotnet restore MBW.Server/MBW.Server.csproj
 
     - name: Build backend
-      run: dotnet build mbw.server/mbw.server.csproj --no-restore
+      run: dotnet build MBW.Server/MBW.Server.csproj --no-restore
 
     - name: Test backend
-      run: dotnet test mbw.server/mbw.server.csproj --no-build --verbosity normal
+      run: dotnet test MBW.Server/MBW.Server.csproj --no-build --verbosity normal
