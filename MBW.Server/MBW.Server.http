@@ -4,3 +4,5 @@ GET {{MBW.Server_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+GET {{MBW.Server_HostAddress}}/api/movie
+Accept: application/json
