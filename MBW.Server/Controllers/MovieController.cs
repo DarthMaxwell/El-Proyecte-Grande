@@ -1,6 +1,7 @@
 ﻿using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MBW.Server.Controllers;
 
@@ -14,22 +15,13 @@ public class MovieController : ControllerBase
     {
         _dbContext = dbContext;
     }
-    
-    // Dummy movies
-    List<Movie> movies = new List<Movie>
-    { 
-        new Movie("The Matrix", 136) { Id = 1 },
-        new Movie("Inception", 148) { Id = 2 }, 
-        new Movie("Interstellar", 169) { Id = 3 },
-        new Movie("The Dark Knight", 152) { Id = 4 },
-        new Movie("Fight Club", 139) { Id = 5 }
-    };
         
     // GET: api/movie
     [HttpGet]
-    public async Task<List<Movie>> Get()
+    public async Task<ActionResult<List<Movie>>> Get()
     {
-        return movies;
-        // await _dbContext.Movies
+        List<Movie> res = await _dbContext.Movies.ToListAsync();
+        
+        return Ok(res);
     } 
 }
