@@ -53,10 +53,10 @@ public class ReplyController : ControllerBase
     };
     
     // GET: api/reply/{postId}
-    [HttpGet("{replyId}")]
-    public async Task<ActionResult<List<Reply>>> GetReplies(int replyId)
+    [HttpGet("{postId}")]
+    public async Task<ActionResult<List<Reply>>> GetReplies(int postId)
     {
-        var result = replies.AsEnumerable().Where(r => r.ParentPostId == replyId).ToList();
+        var result = replies.AsEnumerable().Where(r => r.ParentPostId == postId).ToList();
         //await _dbContext.Replies.Where(r => r.ParentPostId == postId);
         
         return Ok(result); // 200 Ok
@@ -75,9 +75,8 @@ public class ReplyController : ControllerBase
         replies.Add(r);
         
         
-        return CreatedAtAction(
-            nameof(GetReplies),
-            new { postId = r.ParentPostId },
+        return Created(
+            $"/api/reply/{r.ParentPostId}",
             r
         ); // 201 Created
     }
