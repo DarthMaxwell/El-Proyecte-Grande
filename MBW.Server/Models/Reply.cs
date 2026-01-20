@@ -4,6 +4,8 @@ public class Reply : Post
 {
     public int ParentPostId { get; set; }
     
+    public Reply() {}
+    
     public Reply(int userId, int moveId, string content, int parentPostId) : base(userId, moveId, content)
     {
         ParentPostId = parentPostId;
