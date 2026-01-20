@@ -3,6 +3,7 @@ using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MBW.Server.Controllers;
 
@@ -10,54 +11,18 @@ namespace MBW.Server.Controllers;
 [Route("api/[controller]")]
 public class ReplyController : ControllerBase
 {
-    /*private readonly MBDBContext _dbContext;
+    private readonly MBDBContext _dbContext;
     
     public  ReplyController(MBDBContext dbContext)
     {
         _dbContext = dbContext;
-    }*/
-    
-    // DUMMY DATA
-    List<Reply> replies = new List<Reply>
-    {
-        new Reply(
-            userId: 2,
-            moveId: 101,
-            content: "I agree — this move surprised me too.",
-            parentPostId: 10
-        ),
-        new Reply(
-            userId: 3,
-            moveId: 101,
-            content: "Same here, I started using it after seeing this post.",
-            parentPostId: 10
-        ),
-        new Reply(
-            userId: 4,
-            moveId: 101,
-            content: "I had mixed results, but it’s definitely situational.",
-            parentPostId: 10
-        ),
-        new Reply(
-            userId: 5,
-            moveId: 101,
-            content: "Good point — positioning makes a huge difference.",
-            parentPostId: 10
-        ),
-        new Reply(
-            userId: 6,
-            moveId: 101,
-            content: "Thanks for the breakdown, this helped a lot.",
-            parentPostId: 10
-        )
-    };
+    }
     
     // GET: api/reply/{postId}
     [HttpGet("{postId}")]
     public async Task<ActionResult<List<Reply>>> GetReplies(int postId)
     {
-        var result = replies.AsEnumerable().Where(r => r.ParentPostId == postId).ToList();
-        //await _dbContext.Replies.Where(r => r.ParentPostId == postId);
+        var result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync().ConfigureAwait(false);
         
         return Ok(result); // 200 Ok
     }
@@ -69,11 +34,8 @@ public class ReplyController : ControllerBase
     {
         Reply r = new Reply(createReply.UserId, createReply.MoveId, createReply.Content, createReply.ParentPostId);
         
-        //_dbContext.Replies.Add(r);
-        //await _dbContext.SaveChangesAsync();
-        
-        replies.Add(r);
-        
+        _dbContext.Replies.Add(r);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         
         return Created(
             $"/api/reply/{r.ParentPostId}",
@@ -87,12 +49,14 @@ public class ReplyController : ControllerBase
     public async Task<ActionResult<Reply>> UpdateReply(ReplyDTO reply)
     {
         // NEEDS USER VALIDATION
-        Reply? res = replies.FirstOrDefault(r => r.Id == reply.Id); // CHANGE TO DATABASE
+        Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == reply.Id);
 
         if (res == null)
-            return NotFound($"Reply with ID {reply.Id} not found."); // 404 Not Found
+            return NoContent(); // 204 No Content
 
-        res.Content = reply.Content; // CHANGE TO DATABASE
+        res.Content = reply.Content;
+        _dbContext.Replies.Update(res);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         
         return Ok(res); // 200 Ok
     }
@@ -103,13 +67,14 @@ public class ReplyController : ControllerBase
     public async Task<ActionResult> DeleteReply(int replyId)
     {
         // NEEDS USER VALIDATION
-        Reply? res = replies.FirstOrDefault(r => r.Id == replyId); // CHANGE TO DATABASE
+        Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == replyId);
         
         if (res == null)
-            return NotFound($"Reply with ID {replyId} not found."); // 404 Not Found
+            return NoContent(); // 204 No Content
         
-        replies.Remove(res); // CHANGE TO DATABASE 
+        _dbContext.Replies.Remove(res);
+        await _dbContext.SaveChangesAsync().ConfigureAwait(false);
         
-        return NoContent(); // 204 No Content
+        return Ok(res); // 200 Ok
     }
 }

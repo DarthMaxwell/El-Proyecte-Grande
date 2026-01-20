@@ -1,6 +1,13 @@
+using MBW.Server.Utils;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
+var connectionString = "Server=localhost;Port=5432;User Id=postgres;Password=hopCan3;Database=MBDatabase";
+
 // Add services to the container.
+builder.Services.AddDbContext<MBDBContext>(options =>
+    options.UseNpgsql(connectionString));
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
