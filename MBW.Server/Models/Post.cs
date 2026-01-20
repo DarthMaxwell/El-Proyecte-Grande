@@ -2,7 +2,7 @@ namespace MBW.Server.Models;
 
 public class Post
 {
-    public int Id { get; set; }
+    public int Id { get; set; } 
     public int UserId { get; set; }
     public int MoveId { get; set; }
     public string Content { get; set; }

@@ -1,12 +1,20 @@
 ﻿using MBW.Server.Models;
+using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MBW.Server.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class MovieController : ControllerBase
 {
+    private readonly MBDBContext _dbContext;
+    
+    public MovieController(MBDBContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
+    
     // Dummy movies
     List<Movie> movies = new List<Movie>
     { 
@@ -22,5 +30,6 @@ public class MovieController : ControllerBase
     public async Task<List<Movie>> Get()
     {
         return movies;
+        // await _dbContext.Movies
     } 
 }

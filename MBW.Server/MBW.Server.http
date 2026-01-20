@@ -1,8 +1,9 @@
 @MBW.Server_HostAddress = http://localhost:5132
 
-GET {{MBW.Server_HostAddress}}/weatherforecast/
+GET {{MBW.Server_HostAddress}}/api/movie
 Accept: application/json
 
 ###
-GET {{MBW.Server_HostAddress}}/api/movie
-Accept: application/json
+
+
+###
