@@ -1,4 +1,4 @@
-import React, {FormEvent, useState} from 'react';
+import React, {type FormEvent, useState} from 'react';
 import "./SearchBar.css"
 
 interface SearchBarProps {
@@ -52,7 +52,6 @@ const SearchBar: React.FC<SearchBarProps> = ({placeholder= "Search...", onSearch
             ))} 
             </ul>
                 )}
-            <p>You are searching for: {searchQuery}</p>
         </div>
     );
 };

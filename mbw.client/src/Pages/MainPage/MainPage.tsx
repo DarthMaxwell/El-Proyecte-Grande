@@ -1,49 +1,102 @@
 import SearchBar from "../../Components/SearchBar/SearchBar.tsx";
-import {useEffect, useMemo, useState} from "react";
+import { useEffect, useMemo, useState } from "react";
+import PostCard from "../../Components/Post/PostCard";
+import "./MainPage.css";
+import Post from "../../Components/Post/Post";
+import { Link } from "react-router-dom";
+
 
 interface Movie {
     title: string;
-    id : number;
+    id: number;
     length: number;
 }
 
-function MainPage() {
-        const [movies, setMovies] = useState<Movie[]>([]);
-        
-        useEffect(() => {
-            async function loadMovies() {
-                try {
-                    const response = await fetch("/api/movie");
-                    if(!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const data: Movie[] = await response.json();
-                    setMovies(data);
-                } catch (err) {
-                    console.error("Failed to load movies", err);
-                    setMovies([]);
-                }
-            }
-            loadMovies();
-        }, []);
-        
-        const sampleSuggestions = useMemo(() => movies.map(m => m.title), [movies]);
+type PostType = {
+    id: string;
+    title: string;
+    body: string;
+    movie: { id: number; title: string };
+    author: { id: string; username: string };
+};
 
-        const handleSearch = (query: string) => {
-            console.log("Searching for:", query);
-            
-            const matches = movies.filter((m => m.title.toLowerCase().includes(query.toLowerCase()))
-            );
-            console.log("mathces",matches);
-        };
-        return (
-            <>
-                <h1>MainPage</h1>
-                <div style={{padding: "20px"}}>
-                    <SearchBar placeholder="Type to search..."
-                               onSearch={handleSearch}
-                               suggestions={sampleSuggestions}
+function MainPage() {
+    const [movies, setMovies] = useState<Movie[]>([]);
+    const [posts, setPosts] = useState<PostType[]>([]);
+
+    useEffect(() => {
+        async function loadMovies() {
+            try {
+                const response = await fetch("/api/movie");
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data: Movie[] = await response.json();
+                setMovies(data);
+            } catch (err) {
+                console.error("Failed to load movies", err);
+                setMovies([]);
+            }
+        }
+
+        async function loadPosts() {
+            try {
+                const response = await fetch("/api/posts");
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data: PostType[] = await response.json();
+                setPosts(data);
+            } catch (err) {
+                console.error("Failed to load posts", err);
+                setPosts([
+                    {
+                        id: "post-1",
+                        title: "Inception is still amazing",
+                        body: "Watched it again — the pacing is perfect.",
+                        movie: { id: 7, title: "Inception" },
+                        author: { id: "20", username: "You" },
+                    },
+                ]);
+            }
+        }
+
+        loadMovies();
+        loadPosts();
+    }, []);
+
+    const sampleSuggestions = useMemo(() => movies.map((m) => m.title), [movies]);
+
+    const handleSearch = (query: string) => {
+        const matches = movies.filter((m) =>
+            m.title.toLowerCase().includes(query.toLowerCase())
+        );
+        console.log("matches", matches);
+    };
+    
+
+    return (
+        <div className="mainPage">
+            <h1 className="mainTitle">MainPage</h1>
+            <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
+                <Link to="/login" className="loginLink">
+                    Log in / Register
+                </Link>
+            </div>
+            <div className="searchRow">
+                <div className="searchWrap">
+                    <SearchBar
+                        placeholder="Type to search..."
+                        onSearch={handleSearch}
+                        suggestions={sampleSuggestions}
                     />
                 </div>
-            </>
-        );
-    }
+            </div>
+
+            <div className="postRow">
+                <div className="postWrap">
+                    <Post />
+                </div>
+            </div>
+        </div>
+    );
+
+}
+
 export default MainPage;

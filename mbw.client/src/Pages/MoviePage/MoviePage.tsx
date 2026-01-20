@@ -1,45 +1,37 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
-// This will be in the tpye fiels so we dont have to reuse it
 interface Movie {
     id: number;
     title: string;
     length: number;
 }
 
-function MoviePage() {
-    const [movies, setMovies] = useState<Movie[]>([]);
-
-
-    async function populateData() {
-        try {
-            const response = await fetch('/api/movie'); // <-- note leading /
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            setMovies(data);
-        } catch (err) {
-            console.error('Failed to load movies:', err);
-            setMovies([]); // optional fallback
-        }
-    }
-
+export default function MoviePage() {
+    const { movieId } = useParams();
+    const [movie, setMovie] = useState<Movie | null>(null);
 
     useEffect(() => {
-        populateData();
-    }, []);
-    
+        async function load() {
+            try {
+                const response = await fetch(`/api/movie/${movieId}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const data: Movie = await response.json();
+                setMovie(data);
+            } catch (err) {
+                console.error("Failed to load movie:", err);
+                setMovie(null);
+            }
+        }
+        if (movieId) load();
+    }, [movieId]);
+
+    if (!movie) return <h1 style={{ padding: 20 }}>Movie not found.</h1>;
+
     return (
-        <>
-            <h1>MoviePage</h1>
-            <ul>
-                {movies.map((movie) => (
-                    <li key={movie.id}>
-                        <strong>{movie.title}</strong> — {movie.length} min
-                    </li>
-                ))}
-            </ul>
-        </>
+        <div style={{ padding: 20 }}>
+            <h1>{movie.title}</h1>
+            <p>Length: {movie.length} min</p>
+        </div>
     );
-    
 }
-export default MoviePage;

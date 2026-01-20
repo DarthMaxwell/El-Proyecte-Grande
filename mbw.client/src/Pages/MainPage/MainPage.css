@@ -1,0 +1,44 @@
+.mainPage {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.mainTitle {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.searchRow {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.searchWrap > * {
+    width: 100%;
+    max-width: 600px;
+}
+
+.postRow {
+    display: flex;
+    justify-content: center;
+}
+
+.postWrap {
+    width: 100%;
+    max-width: 900px;
+}
+.loginLink {
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    color: inherit;
+}
+
+.loginLink:hover {
+    text-decoration: underline;
+}
+
