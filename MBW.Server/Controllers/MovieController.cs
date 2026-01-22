@@ -1,4 +1,5 @@
-﻿using MBW.Server.Models;
+﻿using System.Data.Common;
+using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -25,9 +26,9 @@ public class MovieController : ControllerBase
             List<Movie> res = await _dbContext.Movies.ToListAsync();
             return Ok(res);
         }
-        catch (Exception)
+        catch (DbException)
         {
-            return StatusCode(StatusCodes.Status503ServiceUnavailable, "Database is currently unavailable. Please try again later.");
+            return StatusCode(503, "Database unavailable.");
         }
     }
     
@@ -43,9 +44,9 @@ public class MovieController : ControllerBase
 
             return Ok(res);
         }
-        catch (Exception)
+        catch (DbException)
         {
-            return StatusCode(StatusCodes.Status503ServiceUnavailable, "Database is currently unavailable. Please try again later.");
+            return StatusCode(503, "Database unavailable.");
         }
     }
 }
