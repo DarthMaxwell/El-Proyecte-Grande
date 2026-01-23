@@ -10,6 +10,14 @@ export default defineConfig({
         target: "http://localhost:5132",
         secure: false
       },
+      "^/api/reply": {
+        target: "http://localhost:5132",
+        secure: false,
+      },
+      "^/api/Posts": {
+        target: "http://localhost:5132",
+        secure: false,
+      },
     },
   },
 })

@@ -15,24 +15,19 @@ public class PostsController : ControllerBase
         _dbContext = dbContext;
     }
     
-    // GET: api/posts
-    [HttpGet]
-    public List<Post> GetAllPosts()
+    // GET: api/posts/{movieId}
+    [HttpGet("{movieId}")]
+    public async Task<ActionResult<List<Post>>> GetAllPostsForMovie(int movieId)
     {
-        return null;
+        //TODO
+        throw new NotImplementedException();
     }
     
-    // GET: api/post/{userId} i think is it
-    [HttpGet("{userId}")]
-    public List<Post> GetUserPosts(int userId)
-    {
-        return null;
-    }
+    // GET: api/post/{userId}
     
-    // POST:
+    // POST: api/post
     
+    // PUT: api/post
     
-    // PUT:
-    
-    // DELETE:
+    // DELETE: api/post/{postId}
 }
