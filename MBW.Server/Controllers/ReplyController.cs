@@ -42,7 +42,7 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            Reply r = new Reply(createReply.UserId, createReply.MoveId, createReply.Content, createReply.ParentPostId);
+            Reply r = new Reply(createReply.UserId, createReply.MovieId, createReply.Content, createReply.ParentPostId);
             
             _dbContext.Replies.Add(r);
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);

@@ -8,7 +8,7 @@ public class CreateReplyDTO
     public int UserId { get; set; }
 
     [Required]
-    public int MoveId { get; set; }
+    public int MovieId { get; set; }
 
     [Required]
     [MinLength(1)]
