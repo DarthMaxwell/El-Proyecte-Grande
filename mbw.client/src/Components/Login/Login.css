@@ -1,0 +1,104 @@
+/* Login.css - Shared styles for Login and Register components */
+
+.auth-container {
+    max-width: 400px;
+    margin: 50px auto;
+    padding: 20px;
+}
+
+.auth-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.auth-toggle-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.auth-toggle-btn.active {
+    background-color: #a1eafb;
+    font-weight: bold;
+}
+
+.auth-toggle-btn.inactive {
+    background-color: #e0e0e0;
+    font-weight: normal;
+}
+
+.auth-message {
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+}
+
+.auth-message.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.auth-message.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.auth-form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #a1eafb;
+    box-shadow: 0 0 0 2px rgba(161, 234, 251, 0.2);
+}
+
+.auth-error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.auth-submit-btn {
+    background-color: #a1eafb;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s ease;
+}
+
+.auth-submit-btn:hover {
+    background-color: #8ed9ea;
+}
+
+.auth-submit-btn:active {
+    transform: scale(0.98);
+}

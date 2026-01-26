@@ -1,6 +1,5 @@
 import SearchBar from "../../Components/SearchBar/SearchBar.tsx";
 import { useEffect, useMemo, useState } from "react";
-import PostCard from "../../Components/Post/PostCard";
 import "./MainPage.css";
 import Post from "../../Components/Post/Post";
 import { Link } from "react-router-dom";

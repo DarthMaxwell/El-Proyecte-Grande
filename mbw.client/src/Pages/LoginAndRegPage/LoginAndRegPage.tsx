@@ -1,25 +1,51 @@
+import { useState } from 'react';
+import Login from '../../Components/Login/Login';
+import Register from '../../Components/Register/Register';
+import '../../Components/Login/Login.css';
 
-import { useNavigate, useLocation } from "react-router-dom";
-import { useAuth } from "../../Authenticate/AuthContext";
+type AppMessage = { type: 'success' | 'error'; text: string } | null;
 
-export default function LoginPage() {
-    const { login } = useAuth();
-    const navigate = useNavigate();
-    const location = useLocation();
+function LoginAndRegPage() {
+    const [isLogin, setIsLogin] = useState(true);
+    const [message, setMessage] = useState<AppMessage>(null);
 
-    const from = (location.state as any)?.from?.pathname || "/";
-
-    function doLogin() {
-        // Fake user. Replace with backend auth later.
-        login({ id: "20", username: "You" });
-        navigate(from, { replace: true });
-    }
+    const switchMode = (loginMode: boolean) => {
+        setIsLogin(loginMode);
+        setMessage(null);
+    };
 
     return (
-        <div style={{ padding: 20 }}>
-            <h1>Login</h1>
-            <p>This is a fake login for now.</p>
-            <button onClick={doLogin}>Log in as demo user</button>
+        <div className="auth-container">
+            <div className="auth-toggle">
+                <button
+                    onClick={() => switchMode(true)}
+                    className={`auth-toggle-btn ${isLogin ? 'active' : 'inactive'}`}
+                    type="button"
+                >
+                    Login
+                </button>
+
+                <button
+                    onClick={() => switchMode(false)}
+                    className={`auth-toggle-btn ${!isLogin ? 'active' : 'inactive'}`}
+                    type="button"
+                >
+                    Register
+                </button>
+            </div>
+
+            {message && (
+                <div className={`auth-message ${message.type}`}>
+                    {message.text}
+                </div>
+            )}
+
+            {isLogin ? <Login setMessage={setMessage} /> : <Register setMessage={setMessage} />}
         </div>
     );
 }
+
+export default LoginAndRegPage;
+
+
+    
