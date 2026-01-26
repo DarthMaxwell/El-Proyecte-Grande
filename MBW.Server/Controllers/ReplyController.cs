@@ -22,7 +22,7 @@ public class ReplyController : ControllerBase
     [HttpGet("{postId}")]
     public async Task<ActionResult<List<Reply>>> GetReplies(int postId)
     {
-        var result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync().ConfigureAwait(false);
+        List<Reply> result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync().ConfigureAwait(false);
         
         return Ok(result); // 200 Ok
     }
