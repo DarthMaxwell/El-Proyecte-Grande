@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = "Server=localhost;Port=5432;User Id=postgres;Password=hopCan3; Database=MBDatabase";
+var connectionString = builder.Configuration.GetConnectionString("DatabaseConnection");
 
 // Add services to the container.
 builder.Services.AddDbContext<MBDBContext>(options =>
