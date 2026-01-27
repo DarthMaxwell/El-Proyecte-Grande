@@ -1,5 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react';
 import '../../Components/Login/Login.css';
+// not used
 
 interface RegisterProps {
     setMessage: (message: { type: 'success' | 'error'; text: string } | null) => void;

@@ -1,9 +1,9 @@
-import SearchBar from "../../Components/SearchBar/SearchBar.tsx";
+import SearchBar from "../../Components/SearchBar/SearchBar";
 import { useEffect, useMemo, useState } from "react";
 import "./MainPage.css";
 import Post from "../../Components/Post/Post";
 import { Link } from "react-router-dom";
-
+import { useAuth } from "../../Authenticate/AuthContext";
 
 interface Movie {
     title: string;
@@ -22,6 +22,9 @@ type PostType = {
 function MainPage() {
     const [movies, setMovies] = useState<Movie[]>([]);
     const [posts, setPosts] = useState<PostType[]>([]);
+    const { user, logout } = useAuth();
+
+    const isLoggedIn = !!user;
 
     useEffect(() => {
         async function loadMovies() {
@@ -68,16 +71,31 @@ function MainPage() {
         );
         console.log("matches", matches);
     };
-    
 
     return (
         <div className="mainPage">
             <h1 className="mainTitle">MainPage</h1>
-            <div style={{ display: "flex", justifyContent: "center", marginBottom: 16 }}>
-                <Link to="/login" className="loginLink">
-                    Log in / Register
-                </Link>
+
+            <div className="topActions">
+                {!isLoggedIn ? (
+                    <Link to="/login" className="loginLink">
+                        Log in / Register
+                    </Link>
+                ) : (
+                    <>
+                        <span className="welcomeText">Hi, {user.username}</span>
+
+                        <button className="logoutBtn" onClick={logout} type="button">
+                            Logout
+                        </button>
+
+                        <Link to="/posts/new" className="createPostLink">
+                            + Create post
+                        </Link>
+                    </>
+                )}
             </div>
+
             <div className="searchRow">
                 <div className="searchWrap">
                     <SearchBar
@@ -95,7 +113,6 @@ function MainPage() {
             </div>
         </div>
     );
-
 }
 
 export default MainPage;

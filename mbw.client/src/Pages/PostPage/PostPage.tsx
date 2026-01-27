@@ -10,17 +10,17 @@ type Post = {
 };
 
 export default function PostPage() {
-    const { postId } = useParams();
+    const { movieId } = useParams();
     const [post, setPost] = useState<Post | null>(null);
 
     useEffect(() => {
         async function load() {
-            const res = await fetch(`/api/posts/${postId}`);
+            const res = await fetch(`/api/Posts/${movieId}`);
             if (res.ok) setPost(await res.json());
             else setPost(null);
         }
-        if (postId) load();
-    }, [postId]);
+        if (movieId) load();
+    }, [movieId]);
 
     if (!post) return <div style={{ padding: 20 }}>Post not found.</div>;
 
