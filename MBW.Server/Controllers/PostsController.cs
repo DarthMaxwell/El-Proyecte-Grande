@@ -1,4 +1,5 @@
 ﻿using System.Data.Common;
+using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ public class PostsController : ControllerBase
     {
         try
         {
-            Post p = new Post(createPost.UserId, createPost.MoveId, createPost.Content);
+            Post p = new Post(createPost.UserId, createPost.MovieId, createPost.Content);
             
             _dbContext.Posts.Add(p);
             await _dbContext.SaveChangesAsync().ConfigureAwait(false);
