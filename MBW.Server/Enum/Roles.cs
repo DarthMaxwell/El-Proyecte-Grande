@@ -2,6 +2,6 @@
 
 public enum Roles
 {
-    ADMIN, 
     AUTHENTICATEDUSER,
+    ADMIN, 
 }

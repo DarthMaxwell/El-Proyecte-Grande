@@ -1,4 +1,5 @@
-﻿using MBW.Server.Models;
+﻿using MBW.Server.Enum;
+using MBW.Server.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace MBW.Server.Utils;
@@ -14,6 +15,10 @@ public class MBDBContext : DbContext
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        modelBuilder.Entity<User>()
+            .Property(u => u.Role)
+            .HasConversion<string>();
+        
         base.OnModelCreating(modelBuilder);
 
         // Seed Movies
@@ -82,7 +87,32 @@ public class MBDBContext : DbContext
             new Reply { Id = 24, UserId = 5, MovieId = 3, Content = "Perfectly executed.", ParentPostId = 4 }
         );
         
-        // Seed users
-        // TODO
+        // Seed Users
+        modelBuilder.Entity<User>().HasData(
+            new User 
+            { 
+                Id = 1, 
+                Name = "maxwell", 
+                Hash = "OQwI3mQAJmIFxBEeE9MzXiu3XINgggUUM4Esx5gPPtU/pDcAm63eNuzB6+dW57C4JYDFjri7sgp0z7uEqkvOGw==",
+                Salt = "6FtjrN1yJf/ai3tP40hQFICgClscl5oxQIBEehyJXckca2cgT4K41KJAWUJ92gj4U7kmJSmS6sj8yWRcdT/79Ub3bsHsiYGzAIng4+7MRVVJIqpHu9ZU4ieHQGMteh4zmAsXJ/4kKRnB6IW8v7rpW+lPzZ9ozgXY9Kz4+Wtw1Us=",
+                Role = Roles.ADMIN
+            },
+            new User 
+            { 
+                Id = 2, 
+                Name = "iver", 
+                Hash = "OQwI3mQAJmIFxBEeE9MzXiu3XINgggUUM4Esx5gPPtU/pDcAm63eNuzB6+dW57C4JYDFjri7sgp0z7uEqkvOGw==",
+                Salt = "6FtjrN1yJf/ai3tP40hQFICgClscl5oxQIBEehyJXckca2cgT4K41KJAWUJ92gj4U7kmJSmS6sj8yWRcdT/79Ub3bsHsiYGzAIng4+7MRVVJIqpHu9ZU4ieHQGMteh4zmAsXJ/4kKRnB6IW8v7rpW+lPzZ9ozgXY9Kz4+Wtw1Us=",
+                Role = Roles.ADMIN
+            },
+            new User 
+            { 
+                Id = 3, 
+                Name = "simen", 
+                Hash = "OQwI3mQAJmIFxBEeE9MzXiu3XINgggUUM4Esx5gPPtU/pDcAm63eNuzB6+dW57C4JYDFjri7sgp0z7uEqkvOGw==",
+                Salt = "6FtjrN1yJf/ai3tP40hQFICgClscl5oxQIBEehyJXckca2cgT4K41KJAWUJ92gj4U7kmJSmS6sj8yWRcdT/79Ub3bsHsiYGzAIng4+7MRVVJIqpHu9ZU4ieHQGMteh4zmAsXJ/4kKRnB6IW8v7rpW+lPzZ9ozgXY9Kz4+Wtw1Us=",
+                Role = Roles.AUTHENTICATEDUSER
+            }
+        );
     }
 }
