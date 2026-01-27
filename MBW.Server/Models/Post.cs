@@ -2,15 +2,17 @@ namespace MBW.Server.Models;
 
 public class Post
 {
-    public int Id { get; set; }
+    public int Id { get; set; } 
     public int UserId { get; set; }
-    public int MoveId { get; set; }
+    public int MovieId { get; set; }
     public string Content { get; set; }
 
-    public Post(int userId, int moveId, string content)
+    public Post() {}
+    
+    public Post(int userId, int movieId, string content)
     {
         UserId = userId;
-        MoveId = moveId;
+        MovieId = movieId;
         Content = content;
     }
 }
