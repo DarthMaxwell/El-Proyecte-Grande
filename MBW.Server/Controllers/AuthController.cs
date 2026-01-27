@@ -34,14 +34,9 @@ public class AuthController : ControllerBase
             return StatusCode(503, "Database unavailable.");
         }
 
-        if (user == null)
+        if (user == null || !PasswordUtil.VerifyPasswordHash(request.Password, user.Hash, user.Salt))
         {
-            return Unauthorized("Invalid credentials"); // 401 Unauthorized
-        }
-
-        if (!PasswordUtil.VerifyPasswordHash(request.Password, user.Hash, user.Salt))
-        {
-            return Unauthorized("Invalid credentials"); // 401 Unauthorized
+            return Unauthorized("Invalid credentials");
         }
         
         string token = _jwtService.GenerateToken(user);
@@ -51,7 +46,7 @@ public class AuthController : ControllerBase
             Token = token,
             Username = user.Name,
             Role = user.Role
-        }); // 200 Ok
+        });
     }
 
     [HttpPost("register")]
@@ -61,7 +56,7 @@ public class AuthController : ControllerBase
         {
             if (await _dbContext.Users.AnyAsync(u => u.Name == request.Username))
             {
-                return BadRequest("Username already exists"); // 400 Bad Request
+                return BadRequest("Username already exists");
             }
             
             PasswordUtil.CreatePasswordHash(request.Password, out string hash, out string salt);
@@ -76,7 +71,7 @@ public class AuthController : ControllerBase
                 id = user.Id,
                 username = user.Name,
                 role = user.Role
-            }); // 201 Created
+            });
         }
         catch (DbException)
         {
