@@ -37,7 +37,7 @@ public class PostsController : ControllerBase
         }
     }
     
-    // GET: api/post
+    // GET: api/posts
     [HttpGet]
     public async Task<ActionResult<List<Post>>> GetAllPostsForUser()
     {
@@ -53,7 +53,22 @@ public class PostsController : ControllerBase
         }
     }
     
-    // POST: api/post
+    // GET: api/posts/post/{postId}
+    [HttpGet("post/{id}")]
+    public async Task<ActionResult<Post>> GetPost(int id)
+    {
+        try
+        {
+            Post? res = await _dbContext.Posts.FindAsync(id);
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
+    
+    // POST: api/posts
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<Post>> CreatePost(CreatePostDTO createPost)
@@ -77,7 +92,7 @@ public class PostsController : ControllerBase
         }
     }
     
-    // PUT: api/post
+    // PUT: api/posts
     [Authorize]
     [HttpPut]
     public async Task<ActionResult<Post>> UpdatePost(PostDTO post)
@@ -105,7 +120,7 @@ public class PostsController : ControllerBase
         }
     }
     
-    // DELETE: api/post/{postId}
+    // DELETE: api/posts/{postId}
     [Authorize]
     [HttpDelete("{postId}")]
     public async Task<ActionResult> DeletePost(int postId)
