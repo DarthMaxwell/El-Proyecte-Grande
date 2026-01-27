@@ -1,26 +1,52 @@
-﻿using MBW.Server.Models;
+﻿using System.Data.Common;
+using MBW.Server.Models;
+using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace MBW.Server.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/[controller]")]
 public class MovieController : ControllerBase
 {
-    // Dummy movies
-    List<Movie> movies = new List<Movie>
-    { 
-        new Movie("The Matrix", 136) { Id = 1 },
-        new Movie("Inception", 148) { Id = 2 }, 
-        new Movie("Interstellar", 169) { Id = 3 },
-        new Movie("The Dark Knight", 152) { Id = 4 },
-        new Movie("Fight Club", 139) { Id = 5 }
-    };
+    private readonly MBDBContext _dbContext;
+    
+    public MovieController(MBDBContext dbContext)
+    {
+        _dbContext = dbContext;
+    }
         
     // GET: api/movie
     [HttpGet]
-    public async Task<List<Movie>> Get()
+    public async Task<ActionResult<List<Movie>>> Get()
     {
-        return movies;
-    } 
+        try
+        {
+            List<Movie> res = await _dbContext.Movies.ToListAsync();
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
+    
+    // GET: api/movie/topfive
+    [HttpGet("topfive")]
+    public async Task<ActionResult<List<Movie>>> GetTopFive()
+    {
+        try
+        {
+            List<Movie> res = await _dbContext.Posts.GroupBy(p => p.MovieId).OrderByDescending(g => g.Count())
+                .Take(5).Select(g => g.Key).Join(_dbContext.Movies, id => id, m => m.Id, (id, m) => m)
+                .ToListAsync();
+
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
 }
