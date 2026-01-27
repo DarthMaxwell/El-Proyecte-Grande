@@ -3,6 +3,7 @@ using System.Data.Common;
 using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -36,7 +37,7 @@ public class ReplyController : ControllerBase
     }
     
     // POST: api/reply
-    // AUTHENTICATED USER
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Reply>> CreateReply(CreateReplyDTO createReply)
     {
@@ -59,7 +60,7 @@ public class ReplyController : ControllerBase
     }
     
     // PUT: api/reply
-    // AUTHENTICATED USER
+    [Authorize]
     [HttpPut]
     public async Task<ActionResult<Reply>> UpdateReply(ReplyDTO reply)
     {
@@ -84,7 +85,7 @@ public class ReplyController : ControllerBase
     }
     
     // DELETE: api/reply/{replyId}
-    // AUTHENTICATED USER
+    [Authorize]
     [HttpDelete("{replyId}")]
     public async Task<ActionResult> DeleteReply(int replyId)
     {
