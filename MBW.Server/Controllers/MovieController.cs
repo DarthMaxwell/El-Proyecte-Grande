@@ -19,7 +19,6 @@ public class MovieController : ControllerBase
     }
         
     // GET: api/movie
-    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Movie>>> Get()
     {
