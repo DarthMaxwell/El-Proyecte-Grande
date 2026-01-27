@@ -1,5 +1,7 @@
 ﻿using System.Data.Common;
+using System.Security.Claims;
 using MBW.Server.DTO;
+using MBW.Server.Enum;
 using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -65,17 +67,20 @@ public class PostsController : ControllerBase
     {
         try
         {
-            // NEEDS USER VALIDATION
+            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Post? res = _dbContext.Posts.FirstOrDefault(p => p.Id == post.Id);
 
             if (res == null)
                 return NotFound();
-
+            
+            if (user == null || (user.Id != res.UserId && user.Role != Roles.ADMIN))
+                return Unauthorized("This is not your post");
+            
             res.Content = post.Content;
             _dbContext.Posts.Update(res);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
             
-            return Ok(res); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -90,16 +95,19 @@ public class PostsController : ControllerBase
     {
         try
         {
-            // NEEDS USER VALIDATION
+            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Post? res = _dbContext.Posts.FirstOrDefault(p => p.Id == postId);
-            
+
             if (res == null)
-                return NoContent(); // 204 No Content
+                return NotFound();
+            
+            if (user == null || (user.Id != res.UserId && user.Role != Roles.ADMIN))
+                return Unauthorized("This is not your post");
             
             _dbContext.Posts.Remove(res);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
             
-            return Ok(res); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {
