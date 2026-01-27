@@ -1,8 +1,8 @@
-﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations;
 
 namespace MBW.Server.DTO;
 
-public class CreateReplyDTO
+public class CreatePostDTO
 {
     [Required]
     public int UserId { get; set; }
@@ -14,7 +14,4 @@ public class CreateReplyDTO
     [MinLength(1)]
     [MaxLength(500)]
     public string Content { get; set; }
-
-    [Required]
-    public int ParentPostId { get; set; }
 }
