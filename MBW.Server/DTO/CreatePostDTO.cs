@@ -5,9 +5,6 @@ namespace MBW.Server.DTO;
 public class CreatePostDTO
 {
     [Required]
-    public int UserId { get; set; }
-
-    [Required]
     public int MovieId { get; set; }
 
     [Required]

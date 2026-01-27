@@ -23,35 +23,30 @@ public class AuthController : ControllerBase
     [HttpPost("login")]
     public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO request)
     {
-        User? user = null;
+        User? u = null;
         
         try
         {
-            user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == request.Username);
+            u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == request.Username);
         }
         catch (DbException)
         {
             return StatusCode(503, "Database unavailable.");
         }
 
-        if (user == null)
+        if (u == null || !PasswordUtil.VerifyPasswordHash(request.Password, u.Hash, u.Salt))
         {
-            return Unauthorized("Invalid credentials"); // 401 Unauthorized
-        }
-
-        if (!PasswordUtil.VerifyPasswordHash(request.Password, user.Hash, user.Salt))
-        {
-            return Unauthorized("Invalid credentials"); // 401 Unauthorized
+            return Unauthorized("Invalid credentials");
         }
         
-        string token = _jwtService.GenerateToken(user);
+        string token = _jwtService.GenerateToken(u);
         
         return Ok(new LoginResponseDTO
         {
             Token = token,
-            Username = user.Name,
-            Role = user.Role
-        }); // 200 Ok
+            Username = u.Name,
+            Role = u.Role
+        });
     }
 
     [HttpPost("register")]
@@ -61,22 +56,22 @@ public class AuthController : ControllerBase
         {
             if (await _dbContext.Users.AnyAsync(u => u.Name == request.Username))
             {
-                return BadRequest("Username already exists"); // 400 Bad Request
+                return BadRequest("Username already exists");
             }
             
             PasswordUtil.CreatePasswordHash(request.Password, out string hash, out string salt);
             
-            User user = new User(request.Username, salt, hash);
+            User u = new User(request.Username, salt, hash);
             
-            await _dbContext.Users.AddAsync(user);
+            await _dbContext.Users.AddAsync(u);
             await _dbContext.SaveChangesAsync();
             
             return Created("", new
             {
-                id = user.Id,
-                username = user.Name,
-                role = user.Role
-            }); // 201 Created
+                id = u.Id,
+                username = u.Name,
+                role = u.Role
+            });
         }
         catch (DbException)
         {
