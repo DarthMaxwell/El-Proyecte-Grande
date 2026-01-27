@@ -81,10 +81,10 @@ public class MBDBContext : DbContext
 
         // Seed Replies
         modelBuilder.Entity<Reply>().HasData(
-            new Reply { Id = 21, UserId = 2, MovieId = 1, Content = "Totally agree.", ParentPostId = 1 },
-            new Reply { Id = 22, UserId = 4, MovieId = 1, Content = "Same here!", ParentPostId = 2 },
-            new Reply { Id = 23, UserId = 1, MovieId = 2, Content = "Characters are amazing.", ParentPostId = 3 },
-            new Reply { Id = 24, UserId = 5, MovieId = 3, Content = "Perfectly executed.", ParentPostId = 4 }
+            new Reply { Id = 21, UserId = 2, Content = "Totally agree.", ParentPostId = 1 },
+            new Reply { Id = 22, UserId = 4, Content = "Same here!", ParentPostId = 2 },
+            new Reply { Id = 23, UserId = 1, Content = "Characters are amazing.", ParentPostId = 3 },
+            new Reply { Id = 24, UserId = 5, Content = "Perfectly executed.", ParentPostId = 4 }
         );
         
         // Seed Users

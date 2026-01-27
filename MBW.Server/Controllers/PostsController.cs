@@ -37,13 +37,14 @@ public class PostsController : ControllerBase
         }
     }
     
-    // GET: api/post/{userid}
-    [HttpGet("{userId}")]
-    public async Task<ActionResult<List<Post>>> GetAllPostsForUser(int userId)
+    // GET: api/post
+    [HttpGet]
+    public async Task<ActionResult<List<Post>>> GetAllPostsForUser()
     {
         try
         {
-            List<Post> res = await _dbContext.Posts.Where(p => p.UserId == userId).ToListAsync();
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            List<Post> res = await _dbContext.Posts.Where(p => p.UserId == u.Id).ToListAsync();
             return Ok(res);
         }
         catch (DbException)
