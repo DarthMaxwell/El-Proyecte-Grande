@@ -28,9 +28,9 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            var result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync();
+            var res = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync();
             
-            return Ok(result);
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -45,8 +45,8 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
-            Reply r = new Reply(user.Id, createReply.MovieId, createReply.Content, createReply.ParentPostId);
+            User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            Reply r = new Reply(u.Id, createReply.MovieId, createReply.Content, createReply.ParentPostId);
             
             await _dbContext.Replies.AddAsync(r);
             await _dbContext.SaveChangesAsync();
@@ -69,13 +69,13 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == reply.Id);
 
             if (res == null)
                 return NotFound();
             
-            if (user == null || (user.Id != res.UserId && user.Role != Roles.ADMIN))
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
 
             res.Content = reply.Content;
@@ -97,13 +97,13 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == replyId);
 
             if (res == null)
                 return NotFound();
             
-            if (user == null || (user.Id != res.UserId && user.Role != Roles.ADMIN))
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
             
             _dbContext.Replies.Remove(res);
