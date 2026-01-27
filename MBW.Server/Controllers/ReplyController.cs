@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
+using System.Security.Claims;
 using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
@@ -26,9 +27,9 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            var result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync().ConfigureAwait(false);
+            var result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync();
             
-            return Ok(result); // 200 Ok
+            return Ok(result);
         }
         catch (DbException)
         {
@@ -45,13 +46,13 @@ public class ReplyController : ControllerBase
         {
             Reply r = new Reply(createReply.UserId, createReply.MovieId, createReply.Content, createReply.ParentPostId);
             
-            _dbContext.Replies.Add(r);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.Replies.AddAsync(r);
+            await _dbContext.SaveChangesAsync();
             
             return Created(
                 $"/api/reply/{r.ParentPostId}",
                 r
-            ); // 201 Created
+            );
         }
         catch (DbException)
         {
@@ -66,11 +67,12 @@ public class ReplyController : ControllerBase
     {
         try
         {
+            User? user = await _dbContext.Users.FirstOrDefault(User.FindFirst(ClaimTypes.Name)?.Value)
             // NEEDS USER VALIDATION
             Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == reply.Id);
 
             if (res == null)
-                return NoContent(); // 204 No Content
+                return NotFound();
 
             res.Content = reply.Content;
             _dbContext.Replies.Update(res);

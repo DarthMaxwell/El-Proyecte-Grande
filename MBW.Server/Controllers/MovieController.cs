@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using MBW.Server.Models;
 using MBW.Server.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +19,7 @@ public class MovieController : ControllerBase
     }
         
     // GET: api/movie
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Movie>>> Get()
     {
