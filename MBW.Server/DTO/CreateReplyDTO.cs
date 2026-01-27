@@ -5,9 +5,6 @@ namespace MBW.Server.DTO;
 public class CreateReplyDTO
 {
     [Required]
-    public int UserId { get; set; }
-
-    [Required]
     public int MovieId { get; set; }
 
     [Required]

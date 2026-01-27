@@ -33,6 +33,21 @@ public class MovieController : ControllerBase
             return StatusCode(503, "Database unavailable.");
         }
     }
+
+    // GET: api/movie/{id}
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Movie>> GetMovie(int id)
+    {
+        try
+        {
+            Movie? res = await _dbContext.Movies.FindAsync(id);
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
     
     // GET: api/movie/topfive
     [HttpGet("topfive")]

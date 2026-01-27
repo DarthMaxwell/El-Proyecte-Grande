@@ -45,7 +45,8 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            Reply r = new Reply(createReply.UserId, createReply.MovieId, createReply.Content, createReply.ParentPostId);
+            User user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            Reply r = new Reply(user.Id, createReply.MovieId, createReply.Content, createReply.ParentPostId);
             
             await _dbContext.Replies.AddAsync(r);
             await _dbContext.SaveChangesAsync();

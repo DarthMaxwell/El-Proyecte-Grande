@@ -27,9 +27,24 @@ public class PostsController : ControllerBase
     {
         try
         {
-            List<Post> result = await _dbContext.Posts.Where(p => p.MovieId == movieId).ToListAsync();
+            List<Post> res = await _dbContext.Posts.Where(p => p.MovieId == movieId).ToListAsync();
             
-            return Ok(result);
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
+    
+    // GET: api/post/{userid}
+    [HttpGet("{userId}")]
+    public async Task<ActionResult<List<Post>>> GetAllPostsForUser(int userId)
+    {
+        try
+        {
+            List<Post> res = await _dbContext.Posts.Where(p => p.UserId == userId).ToListAsync();
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -44,7 +59,8 @@ public class PostsController : ControllerBase
     {
         try
         {
-            Post p = new Post(createPost.UserId, createPost.MovieId, createPost.Content);
+            User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
             
             await _dbContext.Posts.AddAsync(p);
             await _dbContext.SaveChangesAsync();
@@ -67,13 +83,13 @@ public class PostsController : ControllerBase
     {
         try
         {
-            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Post? res = _dbContext.Posts.FirstOrDefault(p => p.Id == post.Id);
 
             if (res == null)
                 return NotFound();
             
-            if (user == null || (user.Id != res.UserId && user.Role != Roles.ADMIN))
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
             
             res.Content = post.Content;
@@ -95,13 +111,13 @@ public class PostsController : ControllerBase
     {
         try
         {
-            User? user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Post? res = _dbContext.Posts.FirstOrDefault(p => p.Id == postId);
 
             if (res == null)
                 return NotFound();
             
-            if (user == null || (user.Id != res.UserId && user.Role != Roles.ADMIN))
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
             
             _dbContext.Posts.Remove(res);
