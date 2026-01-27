@@ -1,7 +1,10 @@
 ﻿using System.Data.Common;
+using System.Security.Claims;
 using MBW.Server.DTO;
+using MBW.Server.Enum;
 using MBW.Server.Models;
 using MBW.Server.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,9 +27,25 @@ public class PostsController : ControllerBase
     {
         try
         {
-            var result = await _dbContext.Posts.Where(p => p.MovieId == movieId).ToListAsync().ConfigureAwait(false);
+            List<Post> res = await _dbContext.Posts.Where(p => p.MovieId == movieId).ToListAsync();
             
-            return Ok(result);
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
+    
+    // GET: api/post
+    [HttpGet]
+    public async Task<ActionResult<List<Post>>> GetAllPostsForUser()
+    {
+        try
+        {
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            List<Post> res = await _dbContext.Posts.Where(p => p.UserId == u.Id).ToListAsync();
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -35,22 +54,22 @@ public class PostsController : ControllerBase
     }
     
     // POST: api/post
-    // POST: api/reply
-    // AUTHENTICATED USER
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Post>> CreatePost(CreatePostDTO createPost)
     {
         try
         {
-            Post p = new Post(createPost.UserId, createPost.MovieId, createPost.Content);
+            User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
             
-            _dbContext.Posts.Add(p);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.Posts.AddAsync(p);
+            await _dbContext.SaveChangesAsync();
             
             return Created(
                 $"/api/posts/{p.MovieId}",
                 p
-            ); // 201 Created
+            );
         }
         catch (DbException)
         {
@@ -59,23 +78,26 @@ public class PostsController : ControllerBase
     }
     
     // PUT: api/post
-    // AUTHENTICATED USER
+    [Authorize]
     [HttpPut]
     public async Task<ActionResult<Post>> UpdatePost(PostDTO post)
     {
         try
         {
-            // NEEDS USER VALIDATION
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Post? res = _dbContext.Posts.FirstOrDefault(p => p.Id == post.Id);
 
             if (res == null)
-                return NoContent(); // 204 No Content
-
+                return NotFound();
+            
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+                return Unauthorized("This is not your post");
+            
             res.Content = post.Content;
             _dbContext.Posts.Update(res);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
             
-            return Ok(res); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -84,22 +106,25 @@ public class PostsController : ControllerBase
     }
     
     // DELETE: api/post/{postId}
-    // AUTHENTICATED USER
+    [Authorize]
     [HttpDelete("{postId}")]
     public async Task<ActionResult> DeletePost(int postId)
     {
         try
         {
-            // NEEDS USER VALIDATION
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Post? res = _dbContext.Posts.FirstOrDefault(p => p.Id == postId);
-            
+
             if (res == null)
-                return NoContent(); // 204 No Content
+                return NotFound();
+            
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+                return Unauthorized("This is not your post");
             
             _dbContext.Posts.Remove(res);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
             
-            return Ok(res); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {

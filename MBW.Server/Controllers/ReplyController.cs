@@ -1,6 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Data.Common;
+using System.Security.Claims;
 using MBW.Server.DTO;
+using MBW.Server.Enum;
 using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -26,9 +28,9 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            var result = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync().ConfigureAwait(false);
+            var res = await _dbContext.Replies.Where(r => r.ParentPostId == postId).ToListAsync();
             
-            return Ok(result); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -43,15 +45,16 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            Reply r = new Reply(createReply.UserId, createReply.MovieId, createReply.Content, createReply.ParentPostId);
+            User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            Reply r = new Reply(createReply.ParentPostId, u.Id, createReply.Content);
             
-            _dbContext.Replies.Add(r);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.Replies.AddAsync(r);
+            await _dbContext.SaveChangesAsync();
             
             return Created(
                 $"/api/reply/{r.ParentPostId}",
                 r
-            ); // 201 Created
+            );
         }
         catch (DbException)
         {
@@ -66,17 +69,20 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            // NEEDS USER VALIDATION
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == reply.Id);
 
             if (res == null)
-                return NoContent(); // 204 No Content
+                return NotFound();
+            
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+                return Unauthorized("This is not your post");
 
             res.Content = reply.Content;
             _dbContext.Replies.Update(res);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
             
-            return Ok(res); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {
@@ -91,16 +97,19 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            // NEEDS USER VALIDATION
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
             Reply? res = _dbContext.Replies.FirstOrDefault(r => r.Id == replyId);
-            
+
             if (res == null)
-                return NoContent(); // 204 No Content
+                return NotFound();
+            
+            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+                return Unauthorized("This is not your post");
             
             _dbContext.Replies.Remove(res);
-            await _dbContext.SaveChangesAsync().ConfigureAwait(false);
+            await _dbContext.SaveChangesAsync();
             
-            return Ok(res); // 200 Ok
+            return Ok(res);
         }
         catch (DbException)
         {

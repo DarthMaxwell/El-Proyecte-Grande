@@ -1,6 +1,7 @@
 ﻿using System.Data.Common;
 using MBW.Server.Models;
 using MBW.Server.Utils;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,12 +19,28 @@ public class MovieController : ControllerBase
     }
         
     // GET: api/movie
+    [Authorize]
     [HttpGet]
     public async Task<ActionResult<List<Movie>>> Get()
     {
         try
         {
             List<Movie> res = await _dbContext.Movies.ToListAsync();
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
+
+    // GET: api/movie/{id}
+    [HttpGet("{id}")]
+    public async Task<ActionResult<Movie>> GetMovie(int id)
+    {
+        try
+        {
+            Movie? res = await _dbContext.Movies.FindAsync(id);
             return Ok(res);
         }
         catch (DbException)
