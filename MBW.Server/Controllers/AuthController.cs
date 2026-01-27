@@ -1,4 +1,5 @@
-﻿using MBW.Server.DTO;
+﻿using System.Data.Common;
+using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -23,25 +24,24 @@ public class AuthController : ControllerBase
     public async Task<ActionResult<LoginResponseDTO>> Login(LoginRequestDTO request)
     {
         User? user = null;
-
-
+        
         try
         {
             user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == request.Username);
         }
-        catch (Exception e)
+        catch (DbException)
         {
-            return BadRequest(e.Message);
+            return StatusCode(503, "Database unavailable.");
         }
 
         if (user == null)
         {
-            return Unauthorized("Invalid credentials"); //
+            return Unauthorized("Invalid credentials"); // 401 Unauthorized
         }
 
         if (!PasswordUtil.VerifyPasswordHash(request.Password, user.Hash, user.Salt))
         {
-            return Unauthorized("Invalid credentials"); //
+            return Unauthorized("Invalid credentials"); // 401 Unauthorized
         }
         
         string token = _jwtService.GenerateToken(user);
@@ -57,23 +57,30 @@ public class AuthController : ControllerBase
     [HttpPost("register")]
     public async Task<ActionResult<User>> Register(LoginRequestDTO request)
     {
-        if (_dbContext.Users.Any(u => u.Name == request.Username))
+        try
         {
-            return BadRequest("Username already exists"); // 400 Bad Request
+            if (await _dbContext.Users.AnyAsync(u => u.Name == request.Username))
+            {
+                return BadRequest("Username already exists"); // 400 Bad Request
+            }
+            
+            PasswordUtil.CreatePasswordHash(request.Password, out string hash, out string salt);
+            
+            User user = new User(request.Username, salt, hash);
+            
+            await _dbContext.Users.AddAsync(user);
+            await _dbContext.SaveChangesAsync();
+            
+            return Created("", new
+            {
+                id = user.Id,
+                username = user.Name,
+                role = user.Role
+            }); // 201 Created
         }
-        
-        PasswordUtil.CreatePasswordHash(request.Password, out string hash, out string salt);
-        
-        User user = new User(request.Username, salt, hash);
-        
-        await _dbContext.Users.AddAsync(user);
-        await _dbContext.SaveChangesAsync();
-        
-        return Created("", new
+        catch (DbException)
         {
-            id = user.Id,
-            username = user.Name,
-            role = user.Role
-        }); // 201 Created
+            return StatusCode(503, "Database unavailable.");
+        }
     }
 }
