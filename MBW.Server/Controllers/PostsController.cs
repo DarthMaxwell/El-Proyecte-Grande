@@ -28,7 +28,6 @@ public class PostsController : ControllerBase
         try
         {
             List<Post> res = await _dbContext.Posts.Where(p => p.MovieId == movieId).ToListAsync();
-            
             return Ok(res);
         }
         catch (DbException)
@@ -48,10 +47,6 @@ public class PostsController : ControllerBase
                 return NotFound("User not found");
             
             List<Post> res = await _dbContext.Posts.Where(p => p.UserId == u.Id).ToListAsync();
-            
-            if (res.Count == 0)
-                return NotFound();
-            
             return Ok(res);
         }
         catch (DbException)
