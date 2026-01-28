@@ -108,7 +108,7 @@ function MainPage() {
 
             <div className="postRow">
                 <div className="postWrap">
-                    <Post />
+                    <Post Id={1} MovieTitle={"Absolute Cinema"} Username={"testing"} Content={"This is not from the database just a test"}/>
                 </div>
             </div>
         </div>
