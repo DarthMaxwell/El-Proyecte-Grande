@@ -78,8 +78,12 @@ public class PostsController : ControllerBase
         try
         {
             User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
-            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
             
+            var movieExists = await _dbContext.Movies.AnyAsync(m => m.Id == createPost.MovieId);
+            if (!movieExists)
+                return NotFound("Movie not found");
+            
+            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
             await _dbContext.Posts.AddAsync(p);
             await _dbContext.SaveChangesAsync();
             

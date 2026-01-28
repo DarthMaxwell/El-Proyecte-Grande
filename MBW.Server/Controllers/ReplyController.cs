@@ -46,8 +46,12 @@ public class ReplyController : ControllerBase
         try
         {
             User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
-            Reply r = new Reply(createReply.ParentPostId, u.Id, createReply.Content);
             
+            var postExists = await _dbContext.Posts.AnyAsync(p => p.Id == createReply.ParentPostId);
+            if (!postExists)
+                return NotFound("Post not found");
+            
+            Reply r = new Reply(createReply.ParentPostId, u.Id, createReply.Content);
             await _dbContext.Replies.AddAsync(r);
             await _dbContext.SaveChangesAsync();
             
