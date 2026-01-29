@@ -1,0 +1,20 @@
+﻿.replylist {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.replylist p {
+    text-align: center;
+    color: #666;
+    font-style: italic;
+    padding: 20px;
+}
+
+.replylist .reply {
+    margin-bottom: 12px;
+}
+
+.replylist .reply:last-child {
+    margin-bottom: 0;
+}

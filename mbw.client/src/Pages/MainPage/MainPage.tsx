@@ -1,81 +1,85 @@
 import SearchBar from "../../Components/SearchBar/SearchBar";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import "./MainPage.css";
 import Post from "../../Components/Post/Post";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../Authenticate/AuthContext";
+import PostList from "../../Components/PostList/PostList.tsx";
+
+// top 5 movies
+// get there posts for the post list
+
 
 interface Movie {
-    title: string;
     id: number;
+    releaseDate: string;
     length: number;
+    title: string;
+    director: string;
+    description: string;
+    genre: string;
 }
 
-type PostType = {
-    id: string;
-    title: string;
-    body: string;
-    movie: { id: number; title: string };
-    author: { id: string; username: string };
-};
+interface Post {
+    id: number;
+    userId: number;
+    movieId: number;
+    content: string;
+}
+
+interface PostWithMovie {
+    post: Post;
+    movieTitle: string;
+}
 
 function MainPage() {
-    const [movies, setMovies] = useState<Movie[]>([]);
-    const [posts, setPosts] = useState<PostType[]>([]);
+    const [postsWithMovies, setPostsWithMovies] = useState<PostWithMovie[]>([]);
     const { user, logout } = useAuth();
-
     const isLoggedIn = !!user;
 
     useEffect(() => {
-        async function loadMovies() {
+        async function loadMoviesAndPosts() {
             try {
-                const response = await fetch("/api/movie");
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data: Movie[] = await response.json();
-                setMovies(data);
+                // Get top 5 movies
+                const moviesResponse = await fetch("/api/movie/topfive");
+                if (!moviesResponse.ok) throw new Error(`HTTP ${moviesResponse.status}`);
+                const movies: Movie[] = await moviesResponse.json();
+
+                // For each movie, fetch its posts
+                const allPostsWithMovies: PostWithMovie[] = [];
+
+                for (const movie of movies) {
+                    try {
+                        const postsResponse = await fetch(`/api/posts/${movie.id}`);
+                        if (postsResponse.ok) {
+                            const posts: Post[] = await postsResponse.json();
+
+                            // Add movie info to each post
+                            posts.forEach(post => {
+                                allPostsWithMovies.push({
+                                    post: post,
+                                    movieTitle: movie.title,
+                                });
+                            });
+                        }
+                    } catch (err) {
+                        console.error(`Failed to load posts for movie ${movie.id}`, err);
+                    }
+                }
+
+                setPostsWithMovies(allPostsWithMovies);
             } catch (err) {
-                console.error("Failed to load movies", err);
-                setMovies([]);
+                console.error("Failed to load movies and posts", err);
+                setPostsWithMovies([]);
             }
         }
 
-        async function loadPosts() {
-            try {
-                const response = await fetch("/api/posts");
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data: PostType[] = await response.json();
-                setPosts(data);
-            } catch (err) {
-                console.error("Failed to load posts", err);
-                setPosts([
-                    {
-                        id: "post-1",
-                        title: "Inception is still amazing",
-                        body: "Watched it again — the pacing is perfect.",
-                        movie: { id: 7, title: "Inception" },
-                        author: { id: "20", username: "You" },
-                    },
-                ]);
-            }
-        }
-
-        loadMovies();
-        loadPosts();
+        loadMoviesAndPosts();
     }, []);
-
-    const sampleSuggestions = useMemo(() => movies.map((m) => m.title), [movies]);
-
-    const handleSearch = (query: string) => {
-        const matches = movies.filter((m) =>
-            m.title.toLowerCase().includes(query.toLowerCase())
-        );
-        console.log("matches", matches);
-    };
+    
 
     return (
         <div className="mainPage">
-            <h1 className="mainTitle">MainPage</h1>
-
             <div className="topActions">
                 {!isLoggedIn ? (
                     <Link to="/login" className="loginLink">
@@ -98,19 +102,16 @@ function MainPage() {
 
             <div className="searchRow">
                 <div className="searchWrap">
-                    <SearchBar
-                        placeholder="Type to search..."
-                        onSearch={handleSearch}
-                        suggestions={sampleSuggestions}
-                    />
+                    <SearchBar/>
                 </div>
             </div>
 
-            <div className="postRow">
-                <div className="postWrap">
-                    <Post />
-                </div>
-            </div>
+            <PostList posts={postsWithMovies.map(item => ({
+                Id: item.post.id,
+                MovieTitle: item.movieTitle,
+                Username: item.post.userId.toString(), //NEED TO BE USERNAME LATER
+                Content: item.post.content
+            }))} />
         </div>
     );
 }

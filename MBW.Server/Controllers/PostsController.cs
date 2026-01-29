@@ -28,7 +28,6 @@ public class PostsController : ControllerBase
         try
         {
             List<Post> res = await _dbContext.Posts.Where(p => p.MovieId == movieId).ToListAsync();
-            
             return Ok(res);
         }
         catch (DbException)
@@ -37,13 +36,16 @@ public class PostsController : ControllerBase
         }
     }
     
-    // GET: api/post
-    [HttpGet]
-    public async Task<ActionResult<List<Post>>> GetAllPostsForUser()
+    // GET: api/posts/user/{username}
+    [HttpGet("user/{username}")]
+    public async Task<ActionResult<List<Post>>> GetAllPostsForUser(string username)
     {
         try
         {
-            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
+            User? u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == username);
+            if (u == null)
+                return NotFound("User not found");
+            
             List<Post> res = await _dbContext.Posts.Where(p => p.UserId == u.Id).ToListAsync();
             return Ok(res);
         }
@@ -53,7 +55,22 @@ public class PostsController : ControllerBase
         }
     }
     
-    // POST: api/post
+    // GET: api/posts/post/{postId}
+    [HttpGet("post/{id}")]
+    public async Task<ActionResult<Post>> GetPost(int id)
+    {
+        try
+        {
+            Post? res = await _dbContext.Posts.FindAsync(id);
+            return Ok(res);
+        }
+        catch (DbException)
+        {
+            return StatusCode(503, "Database unavailable.");
+        }
+    }
+    
+    // POST: api/posts
     [Authorize]
     [HttpPost]
     public async Task<ActionResult<Post>> CreatePost(CreatePostDTO createPost)
@@ -61,13 +78,17 @@ public class PostsController : ControllerBase
         try
         {
             User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
-            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
             
+            var movieExists = await _dbContext.Movies.AnyAsync(m => m.Id == createPost.MovieId);
+            if (!movieExists)
+                return NotFound("Movie not found");
+            
+            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
             await _dbContext.Posts.AddAsync(p);
             await _dbContext.SaveChangesAsync();
             
             return Created(
-                $"/api/posts/{p.MovieId}",
+                $"/api/posts/post/{p.Id}",
                 p
             );
         }
@@ -77,7 +98,7 @@ public class PostsController : ControllerBase
         }
     }
     
-    // PUT: api/post
+    // PUT: api/posts
     [Authorize]
     [HttpPut]
     public async Task<ActionResult<Post>> UpdatePost(PostDTO post)
@@ -105,7 +126,7 @@ public class PostsController : ControllerBase
         }
     }
     
-    // DELETE: api/post/{postId}
+    // DELETE: api/posts/{postId}
     [Authorize]
     [HttpDelete("{postId}")]
     public async Task<ActionResult> DeletePost(int postId)
