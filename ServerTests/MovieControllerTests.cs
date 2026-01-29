@@ -12,10 +12,11 @@ namespace ServerTests;
 
 public class MovieControllerTests
 {
-    private static MBDBContext CreateDb(string dbName)
+    private static MBDBContext CreateDb()
     {
+        // Need a new db name for every test - using TestContext.CurrentContext.Test.ID
         var options = new DbContextOptionsBuilder<MBDBContext>()
-            .UseInMemoryDatabase(databaseName: dbName)
+            .UseInMemoryDatabase(TestContext.CurrentContext.Test.ID)
             .Options;
 
         return new MBDBContext(options);
@@ -24,7 +25,7 @@ public class MovieControllerTests
     [Test]
     public async Task Get_ReturnOkAndMovieList()
     {
-        var db = CreateDb("Test1");
+        var db = CreateDb();
         db.Movies.AddRange(
             new Movie
             {
@@ -54,7 +55,7 @@ public class MovieControllerTests
     [Test]
     public async Task Get_NoMovies_ReturnOkAndEmptyList()
     {
-        var db = CreateDb("Test2");
+        var db = CreateDb();
         var controller = new MovieController(db);
         var result = await controller.Get();
         
@@ -69,7 +70,7 @@ public class MovieControllerTests
     [Test]
     public async Task GetMovie_ReturnOkAndMovie()
     {
-        var db = CreateDb("Test3");
+        var db = CreateDb();
         db.Movies.Add(new Movie
         {
             Id = 1, ReleaseDate = new DateOnly(1994, 10, 14), Length = 142, Title = "The Shawshank Redemption",
@@ -92,7 +93,7 @@ public class MovieControllerTests
     [Test]
     public async Task GetMovie_MovieNotFound_ReturnOkAndEmptyObject()
     {
-        var db = CreateDb("Test4");
+        var db = CreateDb();
         var controller = new MovieController(db);
         var result = await controller.GetMovie(1);
         
@@ -106,7 +107,7 @@ public class MovieControllerTests
     [Test]
     public async Task GetTopFive_6Movies_ReturnOKAndMovieListOrdered()
     {
-        var db = CreateDb("Test5");
+        var db = CreateDb();
         db.Movies.AddRange(
             new Movie
             {
@@ -177,7 +178,7 @@ public class MovieControllerTests
     [Test]
     public async Task GetTopFive_3Movies_ReturnOKAndMovieList()
     {
-        var db = CreateDb("Test6");
+        var db = CreateDb();
         db.Movies.AddRange(new Movie
             {
                 Id = 1, ReleaseDate = new DateOnly(1994, 10, 14), Length = 142, Title = "The Shawshank Redemption",
@@ -216,7 +217,7 @@ public class MovieControllerTests
     [Test]
     public async Task GetTopFive_NoMovies_ReturnOKAndEmptyList()
     {
-        var db = CreateDb("Test7");
+        var db = CreateDb();
         
         var controller = new MovieController(db);
         var result = await controller.GetTopFive();
