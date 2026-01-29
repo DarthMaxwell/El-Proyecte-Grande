@@ -1,0 +1,13 @@
+﻿.PostList {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.PostList .no-posts {
+    text-align: center;
+    color: #999;
+    font-size: 16px;
+    padding: 40px 20px;
+    font-style: italic;
+}

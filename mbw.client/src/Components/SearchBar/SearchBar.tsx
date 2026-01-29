@@ -1,58 +1,93 @@
-import React, {type FormEvent, useState} from 'react';
+import React, {type FormEvent, useEffect, useState} from 'react';
 import "./SearchBar.css"
+import {useNavigate} from "react-router-dom";
 
-interface SearchBarProps {
-    placeholder?: string;
-    onSearch: (query: string) => void;
-    suggestions?: string[];
+interface MovieOptions {
+    id: number;
+    title: string;
 }
-const SearchBar: React.FC<SearchBarProps> = ({placeholder= "Search...", onSearch, suggestions = []}) => {
+
+const SearchBar = () => {
     const [searchQuery, setSearchQuery] = useState('');
-    const [filteredSuggestions, setSuggestions] = useState<string[]>([]);
+    const [filteredSuggestions, setFilteredSuggestions] = useState<MovieOptions[]>([]);
+    const [allMovieTitles, setAllMovieTitles] = useState<MovieOptions[]>([]);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        async function loadAllMovieTitles() {
+            try {
+                const response = await fetch("/api/movie");
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                const movies: MovieOptions[] = await response.json();
+
+                setAllMovieTitles(movies.map(m => ({ id: m.id, title: m.title })));
+            } catch (err) {
+                console.error("Failed to load movie titles", err);
+                setAllMovieTitles([]);
+            }
+        }
+
+        loadAllMovieTitles();
+    }, []);
 
     const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value = e.target.value;
         setSearchQuery(value);
-        if(suggestions.length > 0 && value.trim().length > 0) {
-            const filtered = suggestions.filter((item) => item.toLowerCase().includes(value.toLowerCase())
+
+        if (value.trim().length > 0) {
+            const filtered = allMovieTitles.filter((movie) =>
+                movie.title.toLowerCase().includes(value.toLowerCase())
             );
-            setSuggestions(filtered);
+            setFilteredSuggestions(filtered);
         } else {
-            setSuggestions([]);
+            setFilteredSuggestions([]);
         }
     };
+
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         const trimmedQuery = searchQuery.trim();
-        if(trimmedQuery) onSearch(trimmedQuery);
+
+        if (trimmedQuery && filteredSuggestions.length > 0) {
+            // Navigate to the first match
+            navigate(`/movie/${filteredSuggestions[0].id}`);
+            setSearchQuery('');
+            setFilteredSuggestions([]);
+        }
     };
-    const handleSuggestionClick = (suggestions : string) =>{
-        setSearchQuery(suggestions);
-        setSuggestions([]);
-        onSearch(suggestions);
-    }
+
+    const handleSuggestionClick = (movie: MovieOptions) => {
+        navigate(`/movie/${movie.id}`);
+        setSearchQuery('');
+        setFilteredSuggestions([]);
+    };
+
     return (
         <div className="search-bar-container">
             <form onSubmit={handleSubmit}>
-            <input
-                type="text"
-                placeholder={placeholder}
-                value={searchQuery}
-                onChange={handleSearchChange}
-                className="search-bar-input"
-            />
+                <input
+                    type="text"
+                    placeholder="Type to search..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="search-bar-input"
+                />
             </form>
             {filteredSuggestions.length > 0 && (
                 <ul className="suggestions-list">
-            {filteredSuggestions.map((item, index) => (<li key = {index} 
-                                                           onMouseDown={(e) => e.preventDefault()}
-                                                           onClick={() => handleSuggestionClick(item)}> 
-                {item}
-            </li>
-            ))} 
-            </ul>
-                )}
+                    {filteredSuggestions.map((movie) => (
+                        <li
+                            key={movie.id}
+                            onClick={() => handleSuggestionClick(movie)}
+                            className="suggestion-item"
+                        >
+                            {movie.title}
+                        </li>
+                    ))}
+                </ul>
+            )}
         </div>
     );
 };
+
 export default SearchBar;
