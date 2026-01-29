@@ -1,45 +1,90 @@
-import { useState, useEffect } from "react";
+import Movie from "../../Components/Movie/Movie";
+import PostList from "../../Components/PostList/PostList";
+import {useParams} from "react-router-dom";
+import {useEffect, useState} from "react";
 
-// This will be in the tpye fiels so we dont have to reuse it
-interface Movie {
+interface MovieData {
     id: number;
-    title: string;
+    releaseDate: string;
     length: number;
+    title: string;
+    director: string;
+    description: string;
+    genre: string;
 }
 
-function MoviePage() {
-    const [movies, setMovies] = useState<Movie[]>([]);
+interface Post {
+    id: number;
+    userId: number;
+    movieId: number;
+    content: string;
+}
 
+interface PostData {
+    Id: number;
+    MovieTitle: string;
+    Username: string;
+    Content: string;
+}
 
-    async function populateData() {
-        try {
-            const response = await fetch('/api/movie'); // <-- note leading /
-            if (!response.ok) throw new Error(`HTTP ${response.status}`);
-            const data = await response.json();
-            setMovies(data);
-        } catch (err) {
-            console.error('Failed to load movies:', err);
-            setMovies([]); // optional fallback
-        }
-    }
-
+export default function MoviePage() {
+    const { movieId } = useParams<{ movieId: string }>();
+    const [movie, setMovie] = useState<MovieData | null>(null);
+    const [posts, setPosts] = useState<PostData[]>([]);
 
     useEffect(() => {
-        populateData();
-    }, []);
-    
+        async function loadMovieAndPosts() {
+            if (!movieId) return;
+
+            try {
+                // Fetch movie data
+                const movieResponse = await fetch(`/api/movie/${movieId}`);
+                if (!movieResponse.ok) throw new Error(`HTTP ${movieResponse.status}`);
+                const movieData: MovieData = await movieResponse.json();
+                setMovie(movieData);
+
+                // Fetch posts for this movie
+                const postsResponse = await fetch(`/api/posts/${movieId}`);
+                if (postsResponse.ok) {
+                    const postsData: Post[] = await postsResponse.json();
+
+                    // Transform posts to include movie title
+                    const transformedPosts: PostData[] = postsData.map(post => ({
+                        Id: post.id,
+                        MovieTitle: movieData.title,
+                        Username: post.userId.toString(), // You'll want to fetch actual username
+                        Content: post.content
+                    }));
+
+                    setPosts(transformedPosts);
+                } else {
+                    setPosts([]);
+                }
+            } catch (err) {
+                console.error("Failed to load movie or posts", err);
+            }
+        }
+
+        loadMovieAndPosts();
+    }, [movieId]);
+
+    if (!movie) {
+        return <div className="MoviePage">Movie not found</div>;
+    }
+
     return (
-        <>
-            <h1>MoviePage</h1>
-            <ul>
-                {movies.map((movie) => (
-                    <li key={movie.id}>
-                        <strong>{movie.title}</strong> — {movie.length} min
-                    </li>
-                ))}
-            </ul>
-        </>
+        <div className="MoviePage">
+            <Movie
+                ReleaseDate={movie.releaseDate}
+                Length={movie.length}
+                Title={movie.title}
+                Director={movie.director}
+                Description={movie.description}
+                Genre={movie.genre}
+            />
+            <h2>Discussion</h2>
+            <p>Create a post</p>
+            <PostList posts={posts} />
+        </div>
     );
-    
 }
-export default MoviePage;

@@ -1,0 +1,18 @@
+﻿.reply {
+    background-color: #f5f5f5;
+    border-left: 3px solid #007bff;
+    padding: 12px 16px;
+    margin: 8px 0;
+    border-radius: 4px;
+}
+
+.reply p {
+    margin: 0;
+    color: #333;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.reply p::after {
+    content: '';
+}

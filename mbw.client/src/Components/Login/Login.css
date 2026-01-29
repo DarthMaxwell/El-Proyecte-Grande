@@ -1,0 +1,139 @@
+/* Login.css - Shared styles for Auth components */
+
+.auth-container {
+    max-width: 420px;
+    margin: 80px auto;
+    padding: 28px;
+
+    background: #fff;
+    border: 1px solid #ececec;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+}
+
+.auth-title {
+    text-align: center;
+    margin-bottom: 18px;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.auth-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 12px 12px;
+    border-radius: 10px;
+    border: 1px solid #d6d6d6;
+    box-sizing: border-box;
+    font-size: 14px;
+    background: #fff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-input:focus {
+    outline: none;
+    border-color: #4fd1ff;
+    box-shadow: 0 0 0 4px rgba(79, 209, 255, 0.22);
+}
+
+.auth-error {
+    color: #d64545;
+    font-size: 13px;
+}
+
+.auth-message {
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    border-radius: 10px;
+    font-size: 14px;
+    border: 1px solid transparent;
+}
+
+.auth-message.success {
+    background-color: #e9f8ef;
+    color: #146b2e;
+    border-color: #bfe8cd;
+}
+
+.auth-message.error {
+    background-color: #fdecec;
+    color: #8b1e1e;
+    border-color: #f5bcbc;
+}
+
+/* If you still use toggle buttons somewhere */
+.auth-toggle {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.auth-toggle-btn {
+    flex: 1;
+    padding: 10px 12px;
+    border: 1px solid #e2e2e2;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+    background: #f6f6f6;
+}
+
+.auth-toggle-btn:hover {
+    transform: translateY(-1px);
+    border-color: #cfcfcf;
+}
+
+.auth-toggle-btn.active {
+    background-color: #a1eafb;
+    font-weight: 700;
+    border-color: #7ee1f5;
+}
+
+.auth-toggle-btn.inactive {
+    background-color: #f3f3f3;
+    font-weight: 500;
+}
+
+/* Submit buttons */
+.auth-submit-btn {
+    width: 100%;
+    background-color: #a1eafb;
+    padding: 12px;
+    border: 1px solid #7ee1f5;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 15px;
+    transition: transform 0.15s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-submit-btn:hover {
+    background-color: #8ed9ea;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.auth-submit-btn:active {
+    transform: translateY(0);
+}
+
+/* Important if you add loading/disabled states */
+.auth-submit-btn:disabled,
+.auth-toggle-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
