@@ -22,7 +22,7 @@ interface Movie {
 
 interface Post {
     id: number;
-    userId: number;
+    username: string;
     movieId: number;
     content: string;
 }
@@ -109,7 +109,7 @@ function MainPage() {
             <PostList posts={postsWithMovies.map(item => ({
                 Id: item.post.id,
                 MovieTitle: item.movieTitle,
-                Username: item.post.userId.toString(), //NEED TO BE USERNAME LATER
+                Username: item.post.username,
                 Content: item.post.content
             }))} />
         </div>
