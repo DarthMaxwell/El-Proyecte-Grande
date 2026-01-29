@@ -144,21 +144,22 @@ public class MovieControllerTests
                 Description = "A hacker discovers reality is a simulation."
             }
         );
-        
+
         db.Posts.AddRange(
-            new Post { Id = 1, UserId = 1, MovieId = 1, Content = "Absolutely amazing movie." },
-            new Post { Id = 2, UserId = 2, MovieId = 1, Content = "One of the best films ever made." },
-            new Post { Id = 3, UserId = 3, MovieId = 2, Content = "A true classic." },
-            new Post { Id = 4, UserId = 4, MovieId = 2, Content = "Slow but very rewarding." },
-            new Post { Id = 5, UserId = 5, MovieId = 2, Content = "Heath Ledger was phenomenal." },
-            new Post { Id = 6, UserId = 1, MovieId = 2, Content = "Dark and intense." },
-            new Post { Id = 7, UserId = 2, MovieId = 3, Content = "Very emotional." },
-            new Post { Id = 8, UserId = 3, MovieId = 3, Content = "Mind-bending." },
-            new Post { Id = 9, UserId = 4, MovieId = 3, Content = "Needs multiple watches." },
-            new Post { Id = 10, UserId = 5, MovieId = 4, Content = "Changed sci-fi forever." },
-            new Post { Id = 11, UserId = 1, MovieId = 5, Content = "Still holds up." },
-            new Post { Id = 12, UserId = 2, MovieId = 6, Content = "Very unsettling." }
-            );
+            new Post { Id = 1, Title = "Test Title", Username = "maxwell", MovieId = 1, Content = "Absolutely amazing movie." },
+            new Post { Id = 2, Title = "Test Title", Username = "iver", MovieId = 1, Content = "One of the best films ever made." },
+            new Post { Id = 3, Title = "Test Title", Username = "simen", MovieId = 2, Content = "A true classic." },
+            new Post { Id = 4, Title = "Test Title", Username = "maxwell", MovieId = 2, Content = "Slow but very rewarding." },
+            new Post { Id = 5, Title = "Test Title", Username = "iver", MovieId = 2, Content = "Heath Ledger was phenomenal." },
+            new Post { Id = 6, Title = "Test Title", Username = "maxwell", MovieId = 2, Content = "Dark and intense." },
+            new Post { Id = 7, Title = "Test Title", Username = "iver", MovieId = 3, Content = "Very emotional." },
+            new Post { Id = 8, Title = "Test Title", Username = "simen", MovieId = 3, Content = "Mind-bending." },
+            new Post { Id = 9, Title = "Test Title", Username = "maxwell", MovieId = 3, Content = "Needs multiple watches." },
+            new Post { Id = 10, Title = "Test Title", Username = "iver", MovieId = 4, Content = "Changed sci-fi forever." },
+            new Post { Id = 11, Title = "Test Title", Username = "maxwell", MovieId = 5, Content = "Still holds up." },
+            new Post { Id = 12, Title = "Test Title", Username = "iver", MovieId = 6, Content = "Very unsettling." },
+            new Post { Id = 13, Title = "Test Title", Username = "simen", MovieId = 6, Content = "Epic fantasy." }
+        );
         await db.SaveChangesAsync();
         
         var controller = new MovieController(db);
@@ -197,9 +198,9 @@ public class MovieControllerTests
                 Director = "Christopher Nolan", Genre = "Action", Description = "Batman faces the Joker in Gotham City."
             });
         db.Posts.AddRange(
-            new Post { Id = 1, UserId = 1, MovieId = 1, Content = "Absolutely amazing movie." },
-            new Post { Id = 2, UserId = 2, MovieId = 2, Content = "One of the best films ever made." },
-            new Post { Id = 3, UserId = 3, MovieId = 3, Content = "A true classic." }
+            new Post { Id = 1, Title = "Test Title", Username = "maxwell", MovieId = 1, Content = "Absolutely amazing movie." },
+            new Post { Id = 2, Title = "Test Title", Username = "iver", MovieId = 2, Content = "One of the best films ever made." },
+            new Post { Id = 3, Title = "Test Title", Username = "simen", MovieId = 3, Content = "A true classic." }
         );
         
         await db.SaveChangesAsync();
