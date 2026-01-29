@@ -1,37 +1,12 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-
-interface Movie {
-    id: number;
-    title: string;
-    length: number;
-}
+import Movie from "../../Components/Movie/Movie";
+import PostList from "../../Components/PostList/PostList";
 
 export default function MoviePage() {
-    const { movieId } = useParams();
-    const [movie, setMovie] = useState<Movie | null>(null);
-
-    useEffect(() => {
-        async function load() {
-            try {
-                const response = await fetch(`/api/movie/${movieId}`);
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                const data: Movie = await response.json();
-                setMovie(data);
-            } catch (err) {
-                console.error("Failed to load movie:", err);
-                setMovie(null);
-            }
-        }
-        if (movieId) load();
-    }, [movieId]);
-
-    if (!movie) return <h1 style={{ padding: 20 }}>Movie not found.</h1>;
-
     return (
-        <div style={{ padding: 20 }}>
-            <h1>{movie.title}</h1>
-            <p>Length: {movie.length} min</p>
+        <div className="MoviePage">
+            <Movie Length={10} Title={"MovieTitle"} Director={"Director"} Description={"Here ther eis gonad sdf sf dfsfds fsdfds fsfsd f"} Genre={"Genre"} />
+            <p>Create a post</p>
+            <PostList/>
         </div>
     );
 }

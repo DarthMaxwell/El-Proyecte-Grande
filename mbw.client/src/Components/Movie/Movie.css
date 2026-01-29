@@ -1,0 +1,47 @@
+﻿.Movie {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #ffffff;
+    border-radius: 12px;
+    padding: 30px;
+    margin: 20px 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.Movie h1 {
+    margin: 0 0 16px 0;
+    font-size: 28px;
+    font-weight: 700;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.Movie p {
+    margin: 8px 0;
+    line-height: 1.6;
+    font-size: 15px;
+}
+
+.Movie p:first-of-type {
+    font-size: 16px;
+    margin-bottom: 16px;
+    opacity: 0.95;
+    font-style: italic;
+}
+
+.Movie p:nth-of-type(2) {
+    font-weight: 500;
+    opacity: 0.9;
+}
+
+.Movie p:nth-of-type(2)::before {
+    content: "Director: ";
+    font-weight: 600;
+}
+
+.Movie p:last-child::before {
+    content: "Runtime: ";
+    font-weight: 600;
+}
+
+.Movie p:last-child::after {
+    content: " minutes";
+}

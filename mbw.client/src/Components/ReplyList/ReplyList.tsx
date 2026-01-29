@@ -24,7 +24,7 @@ function ReplyList({ ParentId }: ParentPost) {
         if (replies) {
             if (replies.length > 0) {
                 return (replies.map(r => 
-                    <Reply Username={r.Id + ""} Content={r.content}/>
+                    <Reply Username={"" + r.UserId} Content={r.content}/>
                 ));
             } else {
                 return (<p>No comments</p>);

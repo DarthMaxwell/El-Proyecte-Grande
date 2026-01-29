@@ -5,6 +5,7 @@ import ProfilePage from "../Pages/ProfilePage/ProfilePage.tsx";
 import MoviePage from "../Pages/MoviePage/MoviePage.tsx";
 import MainPage from "../Pages/MainPage/MainPage.tsx";
 import LoginAndRegPage from "../Pages/LoginAndRegPage/LoginAndRegPage.tsx";
+import RequireAuth from "../Authenticate/RequireAuth.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -13,9 +14,12 @@ export const router = createBrowserRouter([
         children: [
             {path: "", element: <MainPage />},
             {path: "login", element: <LoginAndRegPage />},
-            {path: "create", element: <CreatePostPage />},
-            {path: "movie", element: <MoviePage />},
-            {path: "profile", element: <ProfilePage />},
+            {path: "movie/:movieId", element: <MoviePage />},
+            {path: "profile/:username", element: <ProfilePage />},
+            {path: "posts/new", element: 
+                    <RequireAuth>
+                        <CreatePostPage/>
+                    </RequireAuth>},
         ]
     }
 ])
