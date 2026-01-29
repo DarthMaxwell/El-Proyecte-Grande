@@ -1,10 +1,13 @@
-import './App.css'
-import {Outlet} from 'react-router'
+import { AuthProvider } from "./Authenticate/AuthContext";
+import {Outlet} from "react-router";
 
-function App() {
-  return (
-      <Outlet/>
-  );
+
+export default function App() {
+    return (
+        <AuthProvider>
+            <Outlet/>
+        </AuthProvider>
+    );
 }
 
-export default App
+

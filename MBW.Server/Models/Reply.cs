@@ -4,15 +4,15 @@ public class Reply
 {
     public int Id { get; set; } 
     public int ParentPostId { get; set; }
-    public int UserId { get; set; }
+    public string Username { get; set; }
     public string Content { get; set; }
     
     public Reply() {}
 
-    public Reply(int parentPostId, int userId, string content)
+    public Reply(int parentPostId, string username, string content)
     {
         ParentPostId = parentPostId;
-        UserId = userId;
+        Username = username;
         Content = content;
     }
 }

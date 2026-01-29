@@ -1,0 +1,109 @@
+.mainPage {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.mainTitle {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.searchRow {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.searchWrap > * {
+    width: 100%;
+    max-width: 600px;
+}
+
+.postRow {
+    display: flex;
+    justify-content: center;
+}
+
+.postWrap {
+    width: 100%;
+    max-width: 900px;
+}
+.loginLink {
+    text-decoration: none;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    color: inherit;
+}
+
+.loginLink:hover {
+    text-decoration: underline;
+}
+.topActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.createPostLink {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #7ee1f5;
+    background: #a1eafb;
+    font-weight: 800;
+    text-decoration: none;
+    color: #111;
+    transition: transform 0.15s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.createPostLink:hover {
+    background: #8ed9ea;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.createPostLink:active {
+    transform: translateY(0);
+}
+
+.mustLoginText {
+    color: #666;
+    font-size: 14px;
+}
+.topActions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.welcomeText {
+    font-weight: 700;
+    color: #333;
+}
+
+.logoutBtn {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    background: #f3f3f3;
+    cursor: pointer;
+    font-weight: 700;
+}
+
+.createPostLink {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #7ee1f5;
+    background: #a1eafb;
+    font-weight: 800;
+    text-decoration: none;
+    color: #111;
+}
+
+

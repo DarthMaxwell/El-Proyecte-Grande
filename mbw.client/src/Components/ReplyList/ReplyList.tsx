@@ -1,0 +1,52 @@
+﻿import React, {useEffect} from "react";
+import Reply from "../Reply/Reply";
+import "./ReplyList.css"
+
+interface Reply {
+    Id: number,
+    ParentPostId: number,
+    Username: string;
+    content: string;
+}
+
+interface ParentPost {
+    ParentId: number,
+}
+
+function ReplyList({ ParentId }: ParentPost) {
+    const [replies, setReplies] = React.useState<Reply[]>([]);
+
+    useEffect(() => {
+        populateReplyData();
+    }, []);
+
+    function insertData() {
+        if (replies) {
+            if (replies.length > 0) {
+                return (replies.map(r => 
+                    <Reply Username={"" + r.Username} Content={r.content}/>
+                ));
+            } else {
+                return (<p>No comments</p>);
+            }
+        }
+        
+        // return Spinner HERE
+    }
+
+    return (
+      <div className="replylist">
+          {insertData()}
+      </div>  
+    );
+
+    async function populateReplyData() {
+        const response = await fetch('api/reply/' + ParentId)
+        if (response.ok) {
+            const data = await response.json();
+            setReplies(data);
+        } //Need error handling
+    }
+}
+
+export default ReplyList;

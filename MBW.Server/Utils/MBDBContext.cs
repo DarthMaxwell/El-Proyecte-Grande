@@ -54,38 +54,6 @@ public class MBDBContext : DbContext
             new Movie { Id = 29, ReleaseDate = new DateOnly(2017,3,3), Length = 137, Title = "Logan", Director = "James Mangold", Genre = "Action", Description = "An aging Wolverine protects a young mutant." },
             new Movie { Id = 30, ReleaseDate = new DateOnly(2023,7,21), Length = 114, Title = "Oppenheimer", Director = "Christopher Nolan", Genre = "Biography", Description = "The story of the atomic bomb." }
         );
-
-        // Seed Posts
-        modelBuilder.Entity<Post>().HasData(
-            new Post { Id = 1, UserId = 1, MovieId = 1, Content = "Absolutely amazing movie." },
-            new Post { Id = 2, UserId = 2, MovieId = 1, Content = "One of the best films ever made." },
-            new Post { Id = 3, UserId = 3, MovieId = 2, Content = "A true classic." },
-            new Post { Id = 4, UserId = 4, MovieId = 2, Content = "Slow but very rewarding." },
-            new Post { Id = 5, UserId = 5, MovieId = 3, Content = "Heath Ledger was phenomenal." },
-            new Post { Id = 6, UserId = 1, MovieId = 3, Content = "Dark and intense." },
-            new Post { Id = 7, UserId = 2, MovieId = 4, Content = "Very emotional." },
-            new Post { Id = 8, UserId = 3, MovieId = 5, Content = "Mind-bending." },
-            new Post { Id = 9, UserId = 4, MovieId = 5, Content = "Needs multiple watches." },
-            new Post { Id = 10, UserId = 5, MovieId = 6, Content = "Changed sci-fi forever." },
-            new Post { Id = 11, UserId = 1, MovieId = 6, Content = "Still holds up." },
-            new Post { Id = 12, UserId = 2, MovieId = 7, Content = "Very unsettling." },
-            new Post { Id = 13, UserId = 3, MovieId = 8, Content = "Epic fantasy." },
-            new Post { Id = 14, UserId = 4, MovieId = 8, Content = "Amazing soundtrack." },
-            new Post { Id = 15, UserId = 5, MovieId = 11, Content = "So much fun." },
-            new Post { Id = 16, UserId = 1, MovieId = 14, Content = "Perfect ending." },
-            new Post { Id = 17, UserId = 2, MovieId = 17, Content = "Visually stunning." },
-            new Post { Id = 18, UserId = 3, MovieId = 19, Content = "Classic Scorsese." },
-            new Post { Id = 19, UserId = 4, MovieId = 21, Content = "Very intense war scenes." },
-            new Post { Id = 20, UserId = 5, MovieId = 26, Content = "A satisfying conclusion." }
-        );
-
-        // Seed Replies
-        modelBuilder.Entity<Reply>().HasData(
-            new Reply { Id = 21, UserId = 2, Content = "Totally agree.", ParentPostId = 1 },
-            new Reply { Id = 22, UserId = 4, Content = "Same here!", ParentPostId = 2 },
-            new Reply { Id = 23, UserId = 1, Content = "Characters are amazing.", ParentPostId = 3 },
-            new Reply { Id = 24, UserId = 5, Content = "Perfectly executed.", ParentPostId = 4 }
-        );
         
         // Seed Users
         modelBuilder.Entity<User>().HasData(
@@ -113,6 +81,38 @@ public class MBDBContext : DbContext
                 Salt = "6FtjrN1yJf/ai3tP40hQFICgClscl5oxQIBEehyJXckca2cgT4K41KJAWUJ92gj4U7kmJSmS6sj8yWRcdT/79Ub3bsHsiYGzAIng4+7MRVVJIqpHu9ZU4ieHQGMteh4zmAsXJ/4kKRnB6IW8v7rpW+lPzZ9ozgXY9Kz4+Wtw1Us=",
                 Role = Roles.AUTHENTICATEDUSER
             }
+        );
+        
+        // Seed Posts
+        modelBuilder.Entity<Post>().HasData(
+            new Post { Id = 1, Title = "Test Title", Username = "maxwell", MovieId = 1, Content = "Absolutely amazing movie." }, 
+            new Post { Id = 2, Title = "Test Title", Username = "iver", MovieId = 1, Content = "One of the best films ever made." },
+            new Post { Id = 3, Title = "Test Title", Username = "simen", MovieId = 2, Content = "A true classic." },
+            new Post { Id = 4, Title = "Test Title", Username = "maxwell", MovieId = 2, Content = "Slow but very rewarding." },
+            new Post { Id = 5, Title = "Test Title", Username = "iver", MovieId = 3, Content = "Heath Ledger was phenomenal." },
+            new Post { Id = 6, Title = "Test Title", Username = "maxwell", MovieId = 3, Content = "Dark and intense." },
+            new Post { Id = 7, Title = "Test Title", Username = "iver", MovieId = 4, Content = "Very emotional." },
+            new Post { Id = 8, Title = "Test Title", Username = "simen", MovieId = 5, Content = "Mind-bending." },
+            new Post { Id = 9, Title = "Test Title", Username = "maxwell", MovieId = 5, Content = "Needs multiple watches." },
+            new Post { Id = 10, Title = "Test Title", Username = "iver", MovieId = 6, Content = "Changed sci-fi forever." },
+            new Post { Id = 11, Title = "Test Title", Username = "maxwell", MovieId = 6, Content = "Still holds up." },
+            new Post { Id = 12, Title = "Test Title", Username = "iver", MovieId = 7, Content = "Very unsettling." },
+            new Post { Id = 13, Title = "Test Title", Username = "simen", MovieId = 8, Content = "Epic fantasy." },
+            new Post { Id = 14, Title = "Test Title", Username = "maxwell", MovieId = 8, Content = "Amazing soundtrack." },
+            new Post { Id = 15, Title = "Test Title", Username = "iver", MovieId = 11, Content = "So much fun." },
+            new Post { Id = 16, Title = "Test Title", Username = "maxwell", MovieId = 14, Content = "Perfect ending." },
+            new Post { Id = 17, Title = "Test Title", Username = "iver", MovieId = 17, Content = "Visually stunning." },
+            new Post { Id = 18, Title = "Test Title", Username = "simen", MovieId = 19, Content = "Classic Scorsese." },
+            new Post { Id = 19, Title = "Test Title", Username = "maxwell", MovieId = 21, Content = "Very intense war scenes." },
+            new Post { Id = 20, Title = "Test Title", Username = "iver", MovieId = 26, Content = "A satisfying conclusion." }
+        );
+
+        // Seed Replies
+        modelBuilder.Entity<Reply>().HasData(
+            new Reply { Id = 21, Username = "iver", Content = "Totally agree.", ParentPostId = 1 },
+            new Reply { Id = 22, Username = "maxwell", Content = "Same here!", ParentPostId = 2 },
+            new Reply { Id = 23, Username = "maxwell", Content = "Characters are amazing.", ParentPostId = 3 },
+            new Reply { Id = 24, Username = "iver", Content = "Perfectly executed.", ParentPostId = 4 }
         );
     }
 }

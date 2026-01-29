@@ -6,6 +6,11 @@ public class CreatePostDTO
 {
     [Required]
     public int MovieId { get; set; }
+    
+    [Required]
+    [MinLength(1)]
+    [MaxLength(100)]
+    public string Title { get; set; }
 
     [Required]
     [MinLength(1)]

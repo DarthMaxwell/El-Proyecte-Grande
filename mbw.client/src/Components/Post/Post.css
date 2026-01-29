@@ -1,0 +1,45 @@
+.Post {
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 16px 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.Post p {
+    margin: 0 0 12px 0;
+    color: #333;
+    line-height: 1.6;
+}
+
+.Post p:first-child {
+    font-size: 18px;
+    font-weight: 600;
+    color: #007bff;
+    margin-bottom: 8px;
+}
+
+.Post p:nth-child(2) {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+.Post p:nth-child(3) {
+    font-size: 15px;
+    color: #444;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.Post .username-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+.Post .username-link:hover p {
+    color: #007bff;
+    text-decoration: underline;
+}

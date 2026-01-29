@@ -46,7 +46,7 @@ public class PostsController : ControllerBase
             if (u == null)
                 return NotFound("User not found");
             
-            List<Post> res = await _dbContext.Posts.Where(p => p.UserId == u.Id).ToListAsync();
+            List<Post> res = await _dbContext.Posts.Where(p => p.Username == u.Name).ToListAsync();
             return Ok(res);
         }
         catch (DbException)
@@ -77,13 +77,11 @@ public class PostsController : ControllerBase
     {
         try
         {
-            User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
-            
             var movieExists = await _dbContext.Movies.AnyAsync(m => m.Id == createPost.MovieId);
             if (!movieExists)
                 return NotFound("Movie not found");
             
-            Post p = new Post(u.Id, createPost.MovieId, createPost.Content);
+            Post p = new Post(createPost.MovieId, User.FindFirst(ClaimTypes.Name).Value, createPost.Title, createPost.Content);
             await _dbContext.Posts.AddAsync(p);
             await _dbContext.SaveChangesAsync();
             
@@ -111,7 +109,7 @@ public class PostsController : ControllerBase
             if (res == null)
                 return NotFound();
             
-            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+            if (u == null || (u.Name != res.Username && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
             
             res.Content = post.Content;
@@ -139,7 +137,7 @@ public class PostsController : ControllerBase
             if (res == null)
                 return NotFound();
             
-            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+            if (u == null || (u.Name != res.Username && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
             
             _dbContext.Posts.Remove(res);
