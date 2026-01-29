@@ -18,6 +18,7 @@ interface Post {
     userId: number;
     movieId: number;
     content: string;
+    title: string;
 }
 
 interface PostData {
@@ -25,6 +26,7 @@ interface PostData {
     MovieTitle: string;
     Username: string;
     Content: string;
+    Title: string;
 }
 
 export default function MoviePage() {
@@ -53,7 +55,8 @@ export default function MoviePage() {
                         Id: post.id,
                         MovieTitle: movieData.title,
                         Username: post.userId.toString(), // You'll want to fetch actual username
-                        Content: post.content
+                        Content: post.content,
+                        Title: post.title,
                     }));
 
                     setPosts(transformedPosts);

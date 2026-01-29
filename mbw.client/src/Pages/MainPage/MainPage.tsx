@@ -25,6 +25,7 @@ interface Post {
     username: string;
     movieId: number;
     content: string;
+    title: string;
 }
 
 interface PostWithMovie {
@@ -110,7 +111,8 @@ function MainPage() {
                 Id: item.post.id,
                 MovieTitle: item.movieTitle,
                 Username: item.post.username,
-                Content: item.post.content
+                Content: item.post.content,
+                Title: item.post.title,
             }))} />
         </div>
     );

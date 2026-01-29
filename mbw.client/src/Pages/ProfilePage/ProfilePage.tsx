@@ -8,6 +8,7 @@ interface Post {
     username: string;
     movieId: number;
     content: string;
+    title: string;
 }
 
 interface PostData {
@@ -15,6 +16,7 @@ interface PostData {
     MovieTitle: string;
     Username: string;
     Content: string;
+    Title: string;
 }
 
 export default function ProfilePage() {
@@ -70,7 +72,8 @@ export default function ProfilePage() {
                     Id: post.id,
                     MovieTitle: movieTitles[post.movieId] || `Movie ${post.movieId}`,
                     Username: username,
-                    Content: post.content
+                    Content: post.content,
+                    Title: post.title,
                 }));
 
                 setPosts(transformedPosts);
