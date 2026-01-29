@@ -25,5 +25,8 @@ jobs:
     - name: Build backend
       run: dotnet build MBW.Server/MBW.Server.csproj --no-restore
 
-    - name: Test backend
-      run: dotnet test MBW.Server/MBW.Server.csproj --no-build --verbosity normal
+    - name: Restore tests
+      run: dotnet restore ServerTests/ServerTests.csproj
+
+    - name: Test
+      run: dotnet test ServerTests/ServerTests.csproj -c Release --verbosity normal
