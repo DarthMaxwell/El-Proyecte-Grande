@@ -1,6 +1,7 @@
 import "./Post.css";
 import ReplyList from "../ReplyList/ReplyList.tsx";
 import ReplyForm from "../ReplyForm/ReplyForm.tsx";
+import {Link} from "react-router-dom";
 
 
 interface PostProps {
@@ -14,7 +15,9 @@ export default function Post({ Id, MovieTitle, Username, Content }: PostProps) {
     return (
         <div className="Post">
             <p>{MovieTitle}</p>
-            <p>{Username}</p>
+            <Link to={`/profile/${Username}`} className="username-link">
+                <p>{Username}</p>
+            </Link>
             <p>{Content}</p>
             
             <ReplyForm/>
