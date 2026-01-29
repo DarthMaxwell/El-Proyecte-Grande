@@ -45,13 +45,11 @@ public class ReplyController : ControllerBase
     {
         try
         {
-            User u = await _dbContext.Users.FirstOrDefaultAsync(u => u.Name == User.FindFirst(ClaimTypes.Name).Value);
-            
             var postExists = await _dbContext.Posts.AnyAsync(p => p.Id == createReply.ParentPostId);
             if (!postExists)
                 return NotFound("Post not found");
             
-            Reply r = new Reply(createReply.ParentPostId, u.Id, createReply.Content);
+            Reply r = new Reply(createReply.ParentPostId, User.FindFirst(ClaimTypes.Name).Value, createReply.Content);
             await _dbContext.Replies.AddAsync(r);
             await _dbContext.SaveChangesAsync();
             
@@ -79,7 +77,7 @@ public class ReplyController : ControllerBase
             if (res == null)
                 return NotFound();
             
-            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+            if (u == null || (u.Name != res.Username && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
 
             res.Content = reply.Content;
@@ -107,7 +105,7 @@ public class ReplyController : ControllerBase
             if (res == null)
                 return NotFound();
             
-            if (u == null || (u.Id != res.UserId && u.Role != Roles.ADMIN))
+            if (u == null || (u.Name != res.Username && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
             
             _dbContext.Replies.Remove(res);
