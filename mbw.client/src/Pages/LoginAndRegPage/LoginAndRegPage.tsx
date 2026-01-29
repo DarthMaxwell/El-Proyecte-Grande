@@ -12,6 +12,7 @@ function LoginAndRegPage() {
             {message && <div className={`auth-message ${message.type}`}>{message.text}</div>}
 
             <Login setMessage={setMessage} />
+           
         </div>
     );
 }

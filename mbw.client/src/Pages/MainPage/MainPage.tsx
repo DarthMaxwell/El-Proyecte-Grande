@@ -2,8 +2,6 @@ import SearchBar from "../../Components/SearchBar/SearchBar";
 import { useEffect, useState } from "react";
 import "./MainPage.css";
 import Post from "../../Components/Post/Post";
-import { Link } from "react-router-dom";
-import { useAuth } from "../../Authenticate/AuthContext";
 import PostList from "../../Components/PostList/PostList.tsx";
 
 // top 5 movies
@@ -34,8 +32,6 @@ interface PostWithMovie {
 
 function MainPage() {
     const [postsWithMovies, setPostsWithMovies] = useState<PostWithMovie[]>([]);
-    const { user, logout } = useAuth();
-    const isLoggedIn = !!user;
 
     useEffect(() => {
         async function loadMoviesAndPosts() {
@@ -80,26 +76,6 @@ function MainPage() {
 
     return (
         <div className="mainPage">
-            <div className="topActions">
-                {!isLoggedIn ? (
-                    <Link to="/login" className="loginLink">
-                        Log in / Register
-                    </Link>
-                ) : (
-                    <>
-                        <span className="welcomeText">Hi, {user.username}</span>
-
-                        <button className="logoutBtn" onClick={logout} type="button">
-                            Logout
-                        </button>
-
-                        <Link to="/posts/new" className="createPostLink">
-                            + Create post
-                        </Link>
-                    </>
-                )}
-            </div>
-
             <div className="searchRow">
                 <div className="searchWrap">
                     <SearchBar/>
