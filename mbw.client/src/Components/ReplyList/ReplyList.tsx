@@ -1,12 +1,12 @@
-﻿import React, {useEffect} from "react";
+﻿import {useEffect, useState} from "react";
 import Reply from "../Reply/Reply";
 import "./ReplyList.css"
 
 interface Reply {
-    Id: number,
-    ParentPostId: number,
-    Username: string;
+    id: number,
+    parentPostId: number,
     content: string;
+    username: string;
 }
 
 interface ParentPost {
@@ -14,7 +14,7 @@ interface ParentPost {
 }
 
 function ReplyList({ ParentId }: ParentPost) {
-    const [replies, setReplies] = React.useState<Reply[]>([]);
+    const [replies, setReplies] = useState<Reply[]>([]);
 
     useEffect(() => {
         populateReplyData();
@@ -24,7 +24,7 @@ function ReplyList({ ParentId }: ParentPost) {
         if (replies) {
             if (replies.length > 0) {
                 return (replies.map(r => 
-                    <Reply Username={"" + r.Username} Content={r.content}/>
+                    <Reply Username={r.username} Content={r.content}/>
                 ));
             } else {
                 return (<p>No comments</p>);
