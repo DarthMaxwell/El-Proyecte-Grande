@@ -5,6 +5,7 @@ interface PostData {
     Id: number;
     MovieTitle: string;
     Username: string;
+    Title: string;
     Content: string;
 }
 
@@ -22,6 +23,7 @@ export default function PostList({ posts }: PostListProps) {
                     <Post
                         key={post.Id}
                         Id={post.Id}
+                        Tittle={post.Title}
                         MovieTitle={post.MovieTitle}
                         Username={post.Username}
                         Content={post.Content}

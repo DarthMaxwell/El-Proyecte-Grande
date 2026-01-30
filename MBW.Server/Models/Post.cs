@@ -3,16 +3,18 @@ namespace MBW.Server.Models;
 public class Post
 {
     public int Id { get; set; } 
-    public int UserId { get; set; }
     public int MovieId { get; set; }
+    public string Username { get; set; }
+    public string Title { get; set; }
     public string Content { get; set; }
 
     public Post() {}
-    
-    public Post(int userId, int movieId, string content)
+
+    public Post(int movieId, string username, string title, string content)
     {
-        UserId = userId;
         MovieId = movieId;
+        Username = username;
+        Title = title;
         Content = content;
     }
 }

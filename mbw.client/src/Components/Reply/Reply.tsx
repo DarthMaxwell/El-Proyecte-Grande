@@ -1,4 +1,5 @@
 ﻿import "./Reply.css"
+import {Link} from "react-router-dom";
 
 interface ReplyProps {
     Username: string;
@@ -8,7 +9,9 @@ interface ReplyProps {
 const Reply = ({Username, Content}: ReplyProps) => {
   return (
       <div className="reply">
-          <p>{Content} - {Username}</p>
+          <p>{Content} - <Link to={`/profile/${Username}`} className="username-link">
+              <p>{Username}</p>
+          </Link></p>
       </div>
   )
 }

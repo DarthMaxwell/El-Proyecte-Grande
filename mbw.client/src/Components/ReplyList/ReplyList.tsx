@@ -5,7 +5,7 @@ import "./ReplyList.css"
 interface Reply {
     Id: number,
     ParentPostId: number,
-    UserId: number, // we should change to Username
+    Username: string;
     content: string;
 }
 
@@ -24,7 +24,7 @@ function ReplyList({ ParentId }: ParentPost) {
         if (replies) {
             if (replies.length > 0) {
                 return (replies.map(r => 
-                    <Reply Username={"" + r.UserId} Content={r.content}/>
+                    <Reply Username={"" + r.Username} Content={r.content}/>
                 ));
             } else {
                 return (<p>No comments</p>);
