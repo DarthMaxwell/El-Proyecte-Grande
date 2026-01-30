@@ -4,10 +4,6 @@ import "./MainPage.css";
 import Post from "../../Components/Post/Post";
 import PostList from "../../Components/PostList/PostList.tsx";
 
-// top 5 movies
-// get there posts for the post list
-
-
 interface Movie {
     id: number;
     releaseDate: string;
@@ -33,9 +29,11 @@ interface PostWithMovie {
 
 function MainPage() {
     const [postsWithMovies, setPostsWithMovies] = useState<PostWithMovie[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function loadMoviesAndPosts() {
+            setIsLoading(true);
             try {
                 // Get top 5 movies
                 const moviesResponse = await fetch("/api/movie/topfive");
@@ -61,13 +59,15 @@ function MainPage() {
                         }
                     } catch (err) {
                         console.error(`Failed to load posts for movie ${movie.id}`, err);
-                    }
+                    } 
                 }
 
                 setPostsWithMovies(allPostsWithMovies);
             } catch (err) {
                 console.error("Failed to load movies and posts", err);
                 setPostsWithMovies([]);
+            } finally {
+                setIsLoading(false);
             }
         }
 
@@ -89,7 +89,7 @@ function MainPage() {
                 Username: item.post.username,
                 Content: item.post.content,
                 Title: item.post.title,
-            }))} />
+            }))} loading={isLoading}/>
         </div>
     );
 }

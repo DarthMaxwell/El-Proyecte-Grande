@@ -1,5 +1,6 @@
 ﻿import Post from "../Post/Post";
 import "./PostList.css";
+import Spinner from "../Spinner/Spinner.tsx";
 
 interface PostData {
     Id: number;
@@ -10,12 +11,18 @@ interface PostData {
 }
 
 interface PostListProps {
-    posts: PostData[];
+    posts: PostData[],
+    loading: boolean
 }
 
 //could call for username here too if we still just have the id
 
-export default function PostList({ posts }: PostListProps) {
+export default function PostList({posts, loading}: PostListProps) {
+    
+    if(loading) {
+        return <Spinner/>;
+    }
+    
     return (
         <div className="PostList">
             {posts.length > 0 ? (

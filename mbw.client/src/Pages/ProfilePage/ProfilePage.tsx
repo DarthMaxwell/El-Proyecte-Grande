@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import "./ProfilePage.css";
 import PostList from "../../Components/PostList/PostList.tsx";
+import Spinner from "../../Components/Spinner/Spinner.tsx";
 
 interface Post {
     id: number;
@@ -28,6 +29,7 @@ export default function ProfilePage() {
     useEffect(() => {
         async function loadUserPosts() {
             if (!username) return;
+            setLoading(true);
 
             try {
                 const response = await fetch(`/api/posts/user/${username}`);
@@ -88,14 +90,6 @@ export default function ProfilePage() {
         loadUserPosts();
     }, [username]);
 
-    if (loading) {
-        return (
-            <div className="ProfilePage">
-                <p>Loading...</p>
-            </div>
-        );
-    }
-
     if (!userExists) {
         return (
             <div className="ProfilePage">
@@ -105,19 +99,16 @@ export default function ProfilePage() {
         );
     }
 
-    if (posts.length === 0) {
-        return (
-            <div className="ProfilePage">
-                <h1>{username}</h1>
-                <p className="no-posts">This user hasn't made any posts yet.</p>
-            </div>
-        );
-    }
-
     return (
         <div className="ProfilePage">
             <h1>{username}</h1>
-            <PostList posts={posts} />
+            {loading ? (
+                <Spinner />
+            ) : posts.length === 0 ? (
+                <p className="no-posts">This user hasn't made any posts yet.</p>
+            ) : (
+                <PostList posts={posts} loading={false} />
+            )}
         </div>
     );
 }
