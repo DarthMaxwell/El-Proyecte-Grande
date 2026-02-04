@@ -2,7 +2,7 @@
 
 interface ReplyFormProps {
     closeForm: () => void,
-    postId: number
+    postId: number // use this later and remove from comments
 }
 
 export default function ReplyForm({closeForm, postId}: ReplyFormProps) {
@@ -10,7 +10,7 @@ export default function ReplyForm({closeForm, postId}: ReplyFormProps) {
         <div className="comment-form" id="commentForm">
             <form>
                 <div className="form-group">
-                    <label className="form-label" htmlFor="comment-text">Comment</label>
+                    <label className="form-label" htmlFor="comment-text">Comment {postId}</label>
                     <textarea id="comment-text" className="form-textarea"
                               placeholder="Share your thoughts about this post..."></textarea>
                 </div>
