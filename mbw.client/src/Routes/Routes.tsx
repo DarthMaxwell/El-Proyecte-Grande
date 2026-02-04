@@ -6,6 +6,7 @@ import MoviePage from "../Pages/MoviePage/MoviePage.tsx";
 import MainPage from "../Pages/MainPage/MainPage.tsx";
 import LoginAndRegPage from "../Pages/LoginAndRegPage/LoginAndRegPage.tsx";
 import RequireAuth from "../Authenticate/RequireAuth.tsx";
+import PostPage from "../Pages/PostPage/PostPage.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -16,6 +17,7 @@ export const router = createBrowserRouter([
             {path: "login", element: <LoginAndRegPage />},
             {path: "movie/:movieId", element: <MoviePage />},
             {path: "profile/:username", element: <ProfilePage />},
+            {path: "post/:postId", element: <PostPage />},
             {path: "posts/new", element: 
                     <RequireAuth>
                         <CreatePostPage/>

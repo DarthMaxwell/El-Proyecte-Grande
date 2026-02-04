@@ -1,20 +1,16 @@
 ﻿import {useEffect, useState} from "react";
 import Reply from "../Reply/Reply";
 import "./ReplyList.css"
-
-interface Reply {
-    id: number,
-    parentPostId: number,
-    content: string;
-    username: string;
-}
+import ReplyForm from "../ReplyForm/ReplyForm.tsx";
+import type {Reply as r} from "../../Types/Types.tsx";
 
 interface ParentPost {
     ParentId: number,
 }
 
 function ReplyList({ ParentId }: ParentPost) {
-    const [replies, setReplies] = useState<Reply[]>([]);
+    const [replies, setReplies] = useState<r[]>([]);
+    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         populateReplyData();
@@ -27,17 +23,26 @@ function ReplyList({ ParentId }: ParentPost) {
                     <Reply Username={r.username} Content={r.content}/>
                 ));
             } else {
-                return (<p>No comments</p>);
+                return (<p>No comments, click the plus icon to add a comment</p>);
             }
         }
-        
-        // return Spinner HERE
+    }
+    
+    function toggleForm() {
+        setShowForm(!showForm);
     }
 
     return (
-      <div className="replylist">
-          {insertData()}
-      </div>  
+        <section className="replies">
+            <div className="comments-header-row">
+                <h2 className="comments-header">Comments ({replies.length})</h2>
+                <button className="add-comment-btn" onClick={toggleForm}>+</button>
+            </div>
+
+            {showForm && (<ReplyForm closeForm={() => setShowForm(false)} postId={ParentId}/>)}
+
+            {insertData()}
+        </section>
     );
 
     async function populateReplyData() {

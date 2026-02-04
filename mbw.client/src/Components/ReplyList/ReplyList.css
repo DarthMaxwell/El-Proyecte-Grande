@@ -1,20 +1,40 @@
-﻿.replylist {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px;
+﻿.replies {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-.replylist p {
-    text-align: center;
-    color: #666;
-    font-style: italic;
-    padding: 20px;
+.comments-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #ecf0f1;
 }
 
-.replylist .reply {
-    margin-bottom: 12px;
+.comments-header {
+    font-size: 24px;
+    font-weight: 700;
+    color: #2c3e50;
 }
 
-.replylist .reply:last-child {
-    margin-bottom: 0;
+.add-comment-btn {
+    width: 40px;
+    height: 40px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
+    border: none;
+    border-radius: 50%;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.add-comment-btn:hover {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(137, 181, 213, 0.5);
 }

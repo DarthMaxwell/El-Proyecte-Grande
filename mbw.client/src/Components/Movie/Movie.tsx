@@ -1,22 +1,18 @@
 ﻿import "./Movie.css"
+import type {MovieData} from "../../Types/Types.tsx";
 
 interface MovieProps {
-    ReleaseDate: string;
-    Length: number;
-    Title: string;
-    Director: string;
-    Description: string;
-    Genre: string;
+    movie: MovieData
 }
 
-export default function Movie({ReleaseDate, Length, Title, Director, Description, Genre}: MovieProps) {
+export default function Movie({movie}: MovieProps) {
     return (
         <div className="Movie">
-            <h1>{Title} ({Genre})</h1>
-            <p>{Description}</p>
-            <p>{Director}</p>
-            <p>{Length}</p>
-            <p>{ReleaseDate}</p>
+            <h1>{movie.title} ({movie.genre})</h1>
+            <p>{movie.description}</p>
+            <p>{movie.director}</p>
+            <p>{movie.length}</p>
+            <p>{movie.releaseDate}</p>
         </div>
     );
 }
