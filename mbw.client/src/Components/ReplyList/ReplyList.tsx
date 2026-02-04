@@ -14,13 +14,13 @@ function ReplyList({ ParentId }: ParentPost) {
 
     useEffect(() => {
         populateReplyData();
-    }, []);
+    }, [ParentId]);
 
     function insertData() {
         if (replies) {
             if (replies.length > 0) {
                 return (replies.map(r => 
-                    <Reply Username={r.username} Content={r.content}/>
+                    <Reply key={r.id} Username={r.username} Content={r.content}/>
                 ));
             } else {
                 return (<p>No comments, click the plus icon to add a comment</p>);
@@ -46,11 +46,20 @@ function ReplyList({ ParentId }: ParentPost) {
     );
 
     async function populateReplyData() {
-        const response = await fetch('api/reply/' + ParentId)
-        if (response.ok) {
-            const data = await response.json();
-            setReplies(data);
-        } //Need error handling
+        try {
+            const response = await fetch('/api/reply/' + ParentId);
+
+            if (response.ok) {
+                const data = await response.json();
+                setReplies(data);
+            } else {
+                console.error('Failed to fetch replies:', response.status);
+                setReplies([]);
+            }
+        } catch (error) {
+            console.error('Error fetching replies:', error);
+            setReplies([]);
+        }
     }
 }
 
