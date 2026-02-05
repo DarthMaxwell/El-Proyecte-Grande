@@ -9,10 +9,10 @@ interface ReplyProps {
 const Reply = ({Username, Content}: ReplyProps) => {
   return (
       <div className="reply">
-          <p>{Content}</p>
-          <Link to={`/profile/${Username}`} className="username-link">
-              <p>by: {Username}</p>
-          </Link>
+          <div className="comment-user">
+              <Link className="unstyled-link" to={`/profile/${Username}`}>{Username}</Link>
+          </div>
+          <p className="comment-text">{Content}</p>
       </div>
   )
 }

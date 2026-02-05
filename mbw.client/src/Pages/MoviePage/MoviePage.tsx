@@ -3,32 +3,7 @@ import PostList from "../../Components/PostList/PostList";
 import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
-
-interface MovieData {
-    id: number;
-    releaseDate: string;
-    length: number;
-    title: string;
-    director: string;
-    description: string;
-    genre: string;
-}
-
-interface Post {
-    id: number;
-    username: string;
-    movieId: number;
-    content: string;
-    title: string;
-}
-
-interface PostData {
-    Id: number;
-    MovieTitle: string;
-    Username: string;
-    Content: string;
-    Title: string;
-}
+import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
 
 export default function MoviePage() {
     const { movieId } = useParams<{ movieId: string }>();
@@ -60,6 +35,10 @@ export default function MoviePage() {
                         Username: post.username,
                         Content: post.content,
                         Title: post.title,
+                        MovieId: movieData.id,
+                        MovieGenre: movieData.genre,
+                        MovieLength: movieData.length,
+                        MovieReleaseDate: movieData.releaseDate,
                     }));
 
                     setPosts(transformedPosts);
@@ -83,14 +62,7 @@ export default function MoviePage() {
     return (
         (loading) ? (<Spinner/>) : (
             <div className="MoviePage">
-                <Movie
-                    ReleaseDate={movie.releaseDate}
-                    Length={movie.length}
-                    Title={movie.title}
-                    Director={movie.director}
-                    Description={movie.description}
-                    Genre={movie.genre}
-                />
+                <Movie movie={movie}/>
                 <h2>Discussion</h2>
                 <p>Create a post</p>
                 <PostList posts={posts} loading={false} />

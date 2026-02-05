@@ -1,45 +1,87 @@
-.Post {
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 16px 0;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+.post {
+    background: white;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    padding: 40px 40px 40px;
 }
 
-.Post p {
-    margin: 0 0 12px 0;
-    color: #333;
-    line-height: 1.6;
+.post-title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #2c3e50;
+    margin-bottom: 15px;
+    line-height: 1.3;
 }
 
-.Post p:first-child {
-    font-size: 18px;
+.author-info {
+    font-size: 14px;
+    color: #7f8c8d;
+    margin-bottom: 25px;
+}
+
+.username-link {
+    text-decoration: none;
+}
+
+.username-link:hover .author-name {
+    text-decoration: underline;
+}
+
+.author-name {
+    color: #5a8ab3;
     font-weight: 600;
-    color: #007bff;
+}
+
+.movie-info {
+    background: #f8fbfd;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    position: relative;
+    padding-left: 24px;
+}
+.movie-info::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
+    border-radius: 12px 0 0 12px;
+}
+
+.movie-title {
+    font-size: 22px;
+    font-weight: 600;
+    color: #34495e;
     margin-bottom: 8px;
 }
 
-.Post p:nth-child(2) {
+.movie-meta {
     font-size: 14px;
-    color: #666;
-    font-weight: 500;
+    color: #7f8c8d;
 }
 
-.Post p:nth-child(3) {
-    font-size: 15px;
-    color: #444;
-    margin-bottom: 20px;
-    padding-bottom: 16px;
-    border-bottom: 1px solid #f0f0f0;
+.post-text {
+    font-size: 17px;
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 0;
 }
 
-.Post .username-link {
-    text-decoration: none;
-    color: inherit;
-}
+/* Responsive styles */
+@media (max-width: 768px) {
+    .post {
+        padding: 25px;
+    }
 
-.Post .username-link:hover p {
-    color: #007bff;
-    text-decoration: underline;
+    .post-title {
+        font-size: 26px;
+    }
+
+    .movie-title {
+        font-size: 20px;
+    }
 }
