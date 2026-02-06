@@ -2,6 +2,7 @@
 import "./PostList.css";
 import Spinner from "../Spinner/Spinner.tsx";
 import type {PostData} from "../../Types/Types.tsx";
+import {useEffect, useState} from "react";
 
 interface PostListProps {
     posts: PostData[],
@@ -9,6 +10,11 @@ interface PostListProps {
 }
 
 export default function PostList({posts, loading}: PostListProps) {
+    const [visiblePosts, setVisiblePosts] = useState<PostData[]>(posts);
+    
+    useEffect(() => {
+        setVisiblePosts(posts);
+    }, [posts]);
     
     if(loading) {
         return <Spinner/>;
@@ -16,9 +22,9 @@ export default function PostList({posts, loading}: PostListProps) {
     
     return (
         <div className="PostList">
-            {posts.length > 0 ? (
-                posts.map(post => (
-                    <Post key={post.Id} post={post}/>
+            {visiblePosts.length > 0 ? (
+                visiblePosts.map(post => (
+                    <Post key={post.Id} post={post} onDeleted={(id) => setVisiblePosts((prev) => prev.filter((p) => p.Id !== id))}/>
                 ))
             ) : (
                 <p className="no-posts">No posts yet. Be the first to share your thoughts!</p>

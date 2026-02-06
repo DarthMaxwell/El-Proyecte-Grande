@@ -85,3 +85,40 @@
         font-size: 20px;
     }
 }
+/* Title row + delete button */
+.post-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.post-header .post-title {
+    margin-bottom: 15px; /* keep your spacing */
+}
+
+.delete-post-btn {
+    border: 1px solid rgba(231, 76, 60, 0.8);
+    background: transparent;
+    color: rgba(231, 76, 60, 0.95);
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.05s ease, opacity 0.15s ease;
+    white-space: nowrap;
+    height: fit-content;
+}
+
+.delete-post-btn:hover {
+    opacity: 0.9;
+}
+
+.delete-post-btn:active {
+    transform: translateY(1px);
+}
+
+.delete-post-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
