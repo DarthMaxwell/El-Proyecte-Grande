@@ -1,23 +1,9 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useEffect, useState} from "react";
+import {useParams} from "react-router-dom";
 import "./ProfilePage.css";
 import PostList from "../../Components/PostList/PostList.tsx";
-
-interface Post {
-    id: number;
-    username: string;
-    movieId: number;
-    content: string;
-    title: string;
-}
-
-interface PostData {
-    Id: number;
-    MovieTitle: string;
-    Username: string;
-    Content: string;
-    Title: string;
-}
+import Spinner from "../../Components/Spinner/Spinner.tsx";
+import type {MovieData, Post, PostData} from "../../Types/Types.tsx";
 
 export default function ProfilePage() {
     const { username } = useParams<{ username: string }>();
@@ -28,6 +14,7 @@ export default function ProfilePage() {
     useEffect(() => {
         async function loadUserPosts() {
             if (!username) return;
+            setLoading(true);
 
             try {
                 const response = await fetch(`/api/posts/user/${username}`);
@@ -51,18 +38,16 @@ export default function ProfilePage() {
                 const uniqueMovieIds = [...new Set(postsData.map(post => post.movieId))];
 
                 // Fetch all movie titles
-                const movieTitles: { [key: number]: string } = {};
+                const movies: { [key: number]: MovieData } = {};
                 await Promise.all(
                     uniqueMovieIds.map(async (movieId) => {
                         try {
                             const movieResponse = await fetch(`/api/movie/${movieId}`);
                             if (movieResponse.ok) {
-                                const movieData = await movieResponse.json();
-                                movieTitles[movieId] = movieData.title;
+                                movies[movieId] = await movieResponse.json();
                             }
                         } catch (err) {
                             console.error(`Failed to fetch movie ${movieId}`, err);
-                            movieTitles[movieId] = `Movie ${movieId}`;
                         }
                     })
                 );
@@ -70,10 +55,14 @@ export default function ProfilePage() {
                 // Transform posts with actual movie titles
                 const transformedPosts: PostData[] = postsData.map(post => ({
                     Id: post.id,
-                    MovieTitle: movieTitles[post.movieId] || `Movie ${post.movieId}`,
                     Username: username,
                     Content: post.content,
                     Title: post.title,
+                    MovieTitle: movies[post.movieId].title,
+                    MovieId: post.movieId,
+                    MovieGenre: movies[post.movieId].genre,
+                    MovieLength: movies[post.movieId].length,
+                    MovieReleaseDate: movies[post.movieId].releaseDate,
                 }));
 
                 setPosts(transformedPosts);
@@ -88,14 +77,6 @@ export default function ProfilePage() {
         loadUserPosts();
     }, [username]);
 
-    if (loading) {
-        return (
-            <div className="ProfilePage">
-                <p>Loading...</p>
-            </div>
-        );
-    }
-
     if (!userExists) {
         return (
             <div className="ProfilePage">
@@ -105,19 +86,16 @@ export default function ProfilePage() {
         );
     }
 
-    if (posts.length === 0) {
-        return (
-            <div className="ProfilePage">
-                <h1>{username}</h1>
-                <p className="no-posts">This user hasn't made any posts yet.</p>
-            </div>
-        );
-    }
-
     return (
         <div className="ProfilePage">
             <h1>{username}</h1>
-            <PostList posts={posts} />
+            {loading ? (
+                <Spinner />
+            ) : posts.length === 0 ? (
+                <p className="no-posts">This user hasn't made any posts yet.</p>
+            ) : (
+                <PostList posts={posts} loading={false} />
+            )}
         </div>
     );
 }

@@ -31,17 +31,3 @@
     font-weight: 500;
     opacity: 0.9;
 }
-
-.Movie p:nth-of-type(2)::before {
-    content: "Director: ";
-    font-weight: 600;
-}
-
-.Movie p:last-child::before {
-    content: "Runtime: ";
-    font-weight: 600;
-}
-
-.Movie p:last-child::after {
-    content: " minutes";
-}

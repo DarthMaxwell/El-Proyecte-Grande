@@ -1,49 +1,24 @@
 import SearchBar from "../../Components/SearchBar/SearchBar";
 import { useEffect, useState } from "react";
 import "./MainPage.css";
-import Post from "../../Components/Post/Post";
 import PostList from "../../Components/PostList/PostList.tsx";
-
-// top 5 movies
-// get there posts for the post list
-
-
-interface Movie {
-    id: number;
-    releaseDate: string;
-    length: number;
-    title: string;
-    director: string;
-    description: string;
-    genre: string;
-}
-
-interface Post {
-    id: number;
-    username: string;
-    movieId: number;
-    content: string;
-    title: string;
-}
-
-interface PostWithMovie {
-    post: Post;
-    movieTitle: string;
-}
+import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
 
 function MainPage() {
-    const [postsWithMovies, setPostsWithMovies] = useState<PostWithMovie[]>([]);
+    const [postData, setPostData] = useState<PostData[]>([]);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         async function loadMoviesAndPosts() {
+            setIsLoading(true);
             try {
                 // Get top 5 movies
                 const moviesResponse = await fetch("/api/movie/topfive");
                 if (!moviesResponse.ok) throw new Error(`HTTP ${moviesResponse.status}`);
-                const movies: Movie[] = await moviesResponse.json();
+                const movies: MovieData[] = await moviesResponse.json();
 
                 // For each movie, fetch its posts
-                const allPostsWithMovies: PostWithMovie[] = [];
+                const allPostData: PostData[] = [];
 
                 for (const movie of movies) {
                     try {
@@ -53,21 +28,30 @@ function MainPage() {
 
                             // Add movie info to each post
                             posts.forEach(post => {
-                                allPostsWithMovies.push({
-                                    post: post,
-                                    movieTitle: movie.title,
+                                allPostData.push({
+                                    Id: post.id,
+                                    MovieTitle: movie.title,
+                                    Username: post.username,
+                                    Content: post.content,
+                                    Title: post.title,
+                                    MovieId: movie.id,
+                                    MovieGenre: movie.genre,
+                                    MovieLength: movie.length,
+                                    MovieReleaseDate: movie.releaseDate,
                                 });
                             });
                         }
                     } catch (err) {
                         console.error(`Failed to load posts for movie ${movie.id}`, err);
-                    }
+                    } 
                 }
 
-                setPostsWithMovies(allPostsWithMovies);
+                setPostData(allPostData);
             } catch (err) {
                 console.error("Failed to load movies and posts", err);
-                setPostsWithMovies([]);
+                setPostData([]);
+            } finally {
+                setIsLoading(false);
             }
         }
 
@@ -83,13 +67,7 @@ function MainPage() {
                 </div>
             </div>
 
-            <PostList posts={postsWithMovies.map(item => ({
-                Id: item.post.id,
-                MovieTitle: item.movieTitle,
-                Username: item.post.username,
-                Content: item.post.content,
-                Title: item.post.title,
-            }))} />
+            <PostList posts={postData} loading={isLoading}/>
         </div>
     );
 }
