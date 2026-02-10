@@ -1,8 +1,54 @@
-﻿namespace ServerTests;
+﻿using MBW.Server.Controllers;
+using MBW.Server.Models;
+using MBW.Server.Utils;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+
+namespace ServerTests;
 
 public class PostsControllerTests
 {
-    //GetAllPostsForMovie_InvalidMovieId_ReturnOkAndEmptyList
+    private static MBDBContext CreateDb()
+    {
+        // Need a new db name for every test - using TestContext.CurrentContext.Test.ID
+        var options = new DbContextOptionsBuilder<MBDBContext>()
+            .UseInMemoryDatabase(TestContext.CurrentContext.Test.ID)
+            .Options;
+
+        return new MBDBContext(options);
+    }
+
+    [Test]
+    public async Task GetAllPostsForMovie_InvalidMovieId_ReturnOkAndEmptyList()
+    {
+        var db = CreateDb();
+        db.Movies.AddRange(
+            new Movie
+            {
+                Id = 1, ReleaseDate = new DateOnly(1994, 10, 14), Length = 142, Title = "The Shawshank Redemption",
+                Director = "Frank Darabont", Genre = "Drama",
+                Description = "Two imprisoned men bond over a number of years."
+            }
+        );
+        db.Posts.AddRange(
+            new Post
+            {
+                Id = 1, Title = "Test Title", Username = "maxwell", MovieId = 1, Content = "Absolutely amazing movie."
+            }
+        );
+        
+        await db.SaveChangesAsync();
+        var controller = new PostsController(db);
+        var result = await controller.GetAllPostsForMovie(2);
+        
+        var ok = result.Result as OkObjectResult;
+        Assert.That(ok, Is.Not.Null);
+        
+        var posts = ok.Value as List<Post>;
+        Assert.That(posts.Count, Is.EqualTo(0));
+        
+    }
+    
     //GetAllPostsForMovie_ValidMovieId_ReturnOkAndPostList
     
     //GetAllPostsForUser_ReturnOkAndPostList
