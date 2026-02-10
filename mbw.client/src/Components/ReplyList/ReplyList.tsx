@@ -3,18 +3,25 @@ import Reply from "../Reply/Reply";
 import "./ReplyList.css";
 import ReplyForm from "../ReplyForm/ReplyForm.tsx";
 import type { Reply as R } from "../../Types/Types.tsx";
+import { useAuth } from "../../Authenticate/AuthContext.tsx"; 
 
 interface ParentPost {
     ParentId: number;
 }
 
 function ReplyList({ ParentId }: ParentPost) {
+    const { user, loading } = useAuth();
     const [replies, setReplies] = useState<R[]>([]);
     const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         populateReplyData();
     }, [ParentId]);
+
+
+    useEffect(() => {
+        if (!loading && !user) setShowForm(false);
+    }, [user, loading]);
 
     function toggleForm() {
         setShowForm((prev) => !prev);
@@ -23,6 +30,12 @@ function ReplyList({ ParentId }: ParentPost) {
     function handleReplyDeleted(replyId: number) {
         setReplies((prev) => prev.filter((r) => r.id !== replyId));
     }
+    function handleReplyUpdated(replyId: number, newContent: string) {
+        setReplies((prev) =>
+            prev.map((r) => (r.id === replyId ? { ...r, content: newContent } : r))
+        );
+    }
+
 
     function insertData() {
         if (replies.length > 0) {
@@ -33,28 +46,37 @@ function ReplyList({ ParentId }: ParentPost) {
                     Username={r.username}
                     Content={r.content}
                     onDeleted={handleReplyDeleted}
+                    onUpdated={handleReplyUpdated}
                 />
             ));
         }
-        return <p>No comments, click the plus icon to add a comment</p>;
+        
+        return user ? (
+            <p>No comments, click the plus icon to add a comment</p>
+        ) : (
+            <p>No comments. Log in to add a comment.</p>
+        );
     }
 
     return (
         <section className="replies">
             <div className="comments-header-row">
                 <h2 className="comments-header">Comments ({replies.length})</h2>
-                <button className="add-comment-btn" onClick={toggleForm}>
-                    +
-                </button>
+                {user && (
+                    <button className="add-comment-btn" onClick={toggleForm}>
+                        +
+                    </button>
+                )}
             </div>
 
-            {showForm && (
+            {user && showForm && (
                 <ReplyForm
                     closeForm={() => setShowForm(false)}
                     postId={ParentId}
                     onCreated={populateReplyData}
                 />
             )}
+
             {insertData()}
         </section>
     );
