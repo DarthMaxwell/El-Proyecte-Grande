@@ -1,6 +1,6 @@
 import Movie from "../../Components/Movie/Movie";
 import PostList from "../../Components/PostList/PostList";
-import {NavLink, useParams} from "react-router-dom";
+import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
 import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
@@ -10,8 +10,9 @@ export default function MoviePage() {
     const [movie, setMovie] = useState<MovieData | null>(null);
     const [posts, setPosts] = useState<PostData[]>([]);
     const [loading, setLoading] = useState(true);
-    
-        const refetch = async () => {
+
+    useEffect(() => {
+        async function loadMovieAndPosts() {
             if (!movieId) return;
             setLoading(true);
 
@@ -50,31 +51,21 @@ export default function MoviePage() {
                 setLoading(false);
             }
         }
-        useEffect(() => {
-        refetch();
+
+        loadMovieAndPosts();
     }, [movieId]);
 
-    if (!movie) {
-        return <div className="MoviePage">Movie not found</div>;
-    }
+
+    if (loading) return <Spinner/>;
+
+    if (!movie) return <div className="MoviePage">Movie not found</div>;
 
     return (
-        (loading) ? (<Spinner/>) : (
-            <div className="MoviePage">
-                <Movie movie={movie}/>
-                <h2 >Discussion</h2>
-                <NavLink
-                    to="/posts/new"
-                    className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
-                    style={() => ({
-                        color: "black",
-                    })
-                }
-                >
-                    Create a post
-                </NavLink>
-                <PostList posts={posts} loading={false} refetch={refetch} />
-            </div>
-        )
+        <div className="MoviePage">
+            <Movie movie={movie}/>
+            <h2>Discussion</h2>
+            <p>Create a post</p>
+            <PostList posts={posts} loading={false} />
+        </div>
     );
 }

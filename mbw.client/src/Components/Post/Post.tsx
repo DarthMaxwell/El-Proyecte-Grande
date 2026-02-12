@@ -1,166 +1,38 @@
 import "./Post.css";
-import ReplyList from "../ReplyList/ReplyList";
-import { Link } from "react-router-dom";
-import type { PostData } from "../../Types/Types";
-import { useAuth } from "../../Authenticate/AuthContext";
-import { useState } from "react";
+import ReplyList from "../ReplyList/ReplyList.tsx";
+import {Link} from "react-router-dom";
+import type {PostData} from "../../Types/Types.tsx";
 
 interface PostProps {
-    post: PostData;
-    onDeleted?: (postId: number) => void;
-    onUpdated?: (updated: PostData) => void;
+    post: PostData
 }
 
-export default function Post({ post, onDeleted, onUpdated }: PostProps) {
-    const { user, token } = useAuth();
-
-    const canEdit = !!user && (user.username === post.Username);
-    const canDelete = canEdit || user?.role ==="ADMIN";
-    
-    const [editing, setEditing] = useState(false);
-    const [title, setTitle] = useState(post.Title);
-    const [content, setContent] = useState(post.Content);
-
-    const deletePost = async () => {
-        if (!token || !canDelete) return;
-        if (!confirm("Are you sure you want to delete?")) return;
-
-        try {
-
-            const response = await fetch(`/api/posts/${post.Id}`, {
-                method: "DELETE",
-                headers: { Authorization: `Bearer ${token}` },
-            });
-
-            if (!response.ok) {
-                alert(response.text());
-                return;
-            }
-            onDeleted?.(post.Id);
-        } catch (err) {
-            console.error(err);
-        }
-    };
-
-    const savePost = async () => {
-        if (!token || !canEdit) return;
-
-        const t = title.trim();
-        const c = content.trim();
-        if (!t || !c) {
-            alert("You need to have content and a title");
-            return;
-        }
-
-        try {
-
-            const res = await fetch("/api/posts", {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`,
-                },
-                body: JSON.stringify({ id: post.Id, title: t, content: c }),
-            });
-
-            if (!res.ok) {
-                alert(res.text());
-                return;
-            }
-            
-            const updated: PostData = { ...post, Title: t, Content: c };
-            onUpdated?.(updated);
-
-            setEditing(false);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-
+export default function Post({post}: PostProps) {
     return (
         <div className="post">
-            <div className="post-header">
-                {!editing ? (
-                    <h1 className="post-title">{post.Title}</h1>
-                ) : (
-                    <input
-                        className="post-edit-title"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                    />
-                )}
-
-                {canEdit && (
-                    <div className="post-actions">
-                        {!editing ? (
-                            <>
-                                <button className="edit-post-btn" onClick={() => setEditing(true)}>
-                                    Edit
-                                </button>
-
-                                <button className="delete-post-btn" onClick={deletePost} >
-                                    Delete
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button className="save-post-btn" onClick={savePost}>
-                                    Save
-                                </button>
-
-                                <button
-                                    className="cancel-post-btn"
-                                    onClick={() => {
-                                        setTitle(post.Title);
-                                        setContent(post.Content);
-                                        setEditing(false);
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-                            </>
-                        )}
-                    </div>
-                )}
-            </div>
+            <Link to={`/post/${post.Id}`} className="username-link">
+                <h1 className="post-title">{post.Title}</h1>
+            </Link>
 
             <div className="author-info">
-                By{" "}
-                <Link to={`/profile/${post.Username}`} className="username-link">
-                    <span className="author-name">{post.Username}</span>
-                </Link>
+                By <Link to={`/profile/${post.Username}`} className="username-link">
+                <span className="author-name">{post.Username}</span>
+            </Link>
             </div>
 
             <Link to={`/movie/${post.MovieId}`} className="movie-link">
                 <div className="movie-info">
                     <div className="movie-title">{post.MovieTitle}</div>
-                    <div className="movie-meta">
-                        {post.MovieReleaseDate} • {post.MovieGenre} • {post.MovieLength} min
-                    </div>
+                    <div className="movie-meta">{post.MovieReleaseDate} • {post.MovieGenre} • {post.MovieLength.toString()} min</div>
                 </div>
             </Link>
 
             <div className="post-text">
-                {!editing ? (
-                    <p>{post.Content}</p>
-                ) : (
-                    <div className="post-edit-field">
-                        <label className="post-edit-label" htmlFor={`post-content-${post.Id}`}>
-                            Content
-                        </label>
-                        <textarea
-                            id={`post-content-${post.Id}`}
-                            className="post-edit-content"
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
-                        />
-                    </div>
-                )}
+                <p>{post.Content}</p>
             </div>
 
-
-
-            <ReplyList ParentId={post.Id} />
+            <ReplyList ParentId={post.Id}/>
         </div>
     );
 }
+
