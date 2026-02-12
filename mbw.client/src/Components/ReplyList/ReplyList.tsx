@@ -1,66 +1,76 @@
-﻿import {useEffect, useState} from "react";
+﻿import { useEffect, useState } from "react";
 import Reply from "../Reply/Reply";
-import "./ReplyList.css"
-import ReplyForm from "../ReplyForm/ReplyForm.tsx";
-import type {Reply as r} from "../../Types/Types.tsx";
+import "./ReplyList.css";
+import ReplyForm from "../ReplyForm/ReplyForm";
+import type { Reply as R } from "../../Types/Types";
+import { useAuth } from "../../Authenticate/AuthContext";
 
 interface ParentPost {
-    ParentId: number,
+    ParentId: number;
 }
 
-function ReplyList({ ParentId }: ParentPost) {
-    const [replies, setReplies] = useState<r[]>([]);
+export default function ReplyList({ ParentId }: ParentPost) {
+    const { user, loading } = useAuth();
+    const [replies, setReplies] = useState<R[]>([]);
     const [showForm, setShowForm] = useState(false);
 
+    const refetch = async () => {
+        try {
+            const res = await fetch(`/api/reply/${ParentId}`);
+            if (!res.ok) {
+                console.error("Failed to fetch replies:", res.status);
+                setReplies([]);
+                return;
+            }
+            setReplies(await res.json());
+        } catch (err) {
+            console.error("Error fetching replies:", err);
+            setReplies([]);
+        }
+    };
+
     useEffect(() => {
-        populateReplyData();
+        refetch();
     }, [ParentId]);
 
-    function insertData() {
-        if (replies) {
-            if (replies.length > 0) {
-                return (replies.map(r => 
-                    <Reply key={r.id} Username={r.username} Content={r.content}/>
-                ));
-            } else {
-                return (<p>No comments, click the plus icon to add a comment</p>);
-            }
-        }
-    }
-    
-    function toggleForm() {
-        setShowForm(!showForm);
-    }
+    useEffect(() => {
+        if (!loading && !user) setShowForm(false);
+    }, [user, loading]);
 
     return (
         <section className="replies">
             <div className="comments-header-row">
                 <h2 className="comments-header">Comments ({replies.length})</h2>
-                <button className="add-comment-btn" onClick={toggleForm}>+</button>
+                {user && (
+                    <button className="add-comment-btn" onClick={() => setShowForm((p) => !p)}>
+                        +
+                    </button>
+                )}
             </div>
 
-            {showForm && (<ReplyForm closeForm={() => setShowForm(false)} postId={ParentId}/>)}
+            {user && showForm && (
+                <ReplyForm
+                    closeForm={() => setShowForm(false)}
+                    postId={ParentId}
+                    onCreated={refetch}
+                />
+            )}
 
-            {insertData()}
+            {replies.length > 0 ? (
+                replies.map((r) => (
+                    <Reply
+                        key={r.id}
+                        id={r.id}
+                        Username={r.username}
+                        Content={r.content}
+                        onChanged={refetch} 
+                    />
+                ))
+            ) : user ? (
+                <p>No comments, click the plus icon to add a comment</p>
+            ) : (
+                <p>No comments. Log in to add a comment.</p>
+            )}
         </section>
     );
-
-    async function populateReplyData() {
-        try {
-            const response = await fetch('/api/reply/' + ParentId);
-
-            if (response.ok) {
-                const data = await response.json();
-                setReplies(data);
-            } else {
-                console.error('Failed to fetch replies:', response.status);
-                setReplies([]);
-            }
-        } catch (error) {
-            console.error('Error fetching replies:', error);
-            setReplies([]);
-        }
-    }
 }
-
-export default ReplyList;

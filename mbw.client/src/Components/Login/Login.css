@@ -109,8 +109,9 @@
 /* Submit buttons */
 .auth-submit-btn {
     width: 100%;
-    background-color: #a1eafb;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
     padding: 12px;
+    color: rgba(255,255,255,0.92);
     border: 1px solid #7ee1f5;
     border-radius: 10px;
     cursor: pointer;

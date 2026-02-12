@@ -7,9 +7,8 @@ import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
 function MainPage() {
     const [postData, setPostData] = useState<PostData[]>([]);
     const [isLoading, setIsLoading] = useState(true);
-
-    useEffect(() => {
-        async function loadMoviesAndPosts() {
+    
+        const refetch = async () => {
             setIsLoading(true);
             try {
                 // Get top 5 movies
@@ -54,8 +53,8 @@ function MainPage() {
                 setIsLoading(false);
             }
         }
-
-        loadMoviesAndPosts();
+        useEffect(() => {
+        refetch();
     }, []);
     
 
@@ -67,7 +66,7 @@ function MainPage() {
                 </div>
             </div>
 
-            <PostList posts={postData} loading={isLoading}/>
+            <PostList posts={postData} loading={isLoading} refetch={refetch}/>
         </div>
     );
 }

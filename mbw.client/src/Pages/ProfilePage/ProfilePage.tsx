@@ -1,4 +1,4 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState} from "react";
 import {useParams} from "react-router-dom";
 import "./ProfilePage.css";
 import PostList from "../../Components/PostList/PostList.tsx";
@@ -10,11 +10,10 @@ export default function ProfilePage() {
     const [posts, setPosts] = useState<PostData[]>([]);
     const [loading, setLoading] = useState(true);
     const [userExists, setUserExists] = useState(true);
-
-    useEffect(() => {
-        async function loadUserPosts() {
-            if (!username) return;
-            setLoading(true);
+    
+       const refetch = async () => {
+           if(!username) return;
+           setLoading(true);
 
             try {
                 const response = await fetch(`/api/posts/user/${username}`);
@@ -73,8 +72,8 @@ export default function ProfilePage() {
                 setLoading(false);
             }
         }
-
-        loadUserPosts();
+        useEffect(() => {
+        refetch();
     }, [username]);
 
     if (!userExists) {
@@ -94,7 +93,7 @@ export default function ProfilePage() {
             ) : posts.length === 0 ? (
                 <p className="no-posts">This user hasn't made any posts yet.</p>
             ) : (
-                <PostList posts={posts} loading={false} />
+                <PostList posts={posts} loading={false} refetch={refetch} />
             )}
         </div>
     );

@@ -75,7 +75,7 @@ export default function CreatePostPage() {
 
             if (res.ok) {
                 const created: Post = await res.json();
-                navigate(`/posts/${created.id}`);
+                navigate(`/post/${created.id}`);
                 return;
             }
 

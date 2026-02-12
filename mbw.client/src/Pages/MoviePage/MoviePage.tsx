@@ -10,9 +10,8 @@ export default function MoviePage() {
     const [movie, setMovie] = useState<MovieData | null>(null);
     const [posts, setPosts] = useState<PostData[]>([]);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function loadMovieAndPosts() {
+    
+        const refetch = async () => {
             if (!movieId) return;
             setLoading(true);
 
@@ -51,8 +50,8 @@ export default function MoviePage() {
                 setLoading(false);
             }
         }
-
-        loadMovieAndPosts();
+        useEffect(() => {
+        refetch();
     }, [movieId]);
 
 
@@ -65,7 +64,7 @@ export default function MoviePage() {
             <Movie movie={movie}/>
             <h2>Discussion</h2>
             <p>Create a post</p>
-            <PostList posts={posts} loading={false} />
+            <PostList posts={posts} loading={false} refetch={refetch}/>
         </div>
     );
 }
