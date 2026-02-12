@@ -10,7 +10,9 @@ interface PostProps {
 export default function Post({post}: PostProps) {
     return (
         <div className="post">
-            <h1 className="post-title">{post.Title}</h1>
+            <Link to={`/post/${post.Id}`} className="username-link">
+                <h1 className="post-title">{post.Title}</h1>
+            </Link>
 
             <div className="author-info">
                 By <Link to={`/profile/${post.Username}`} className="username-link">

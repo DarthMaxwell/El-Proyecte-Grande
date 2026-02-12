@@ -55,18 +55,17 @@ export default function MoviePage() {
         loadMovieAndPosts();
     }, [movieId]);
 
-    if (!movie) {
-        return <div className="MoviePage">Movie not found</div>;
-    }
+
+    if (loading) return <Spinner/>;
+
+    if (!movie) return <div className="MoviePage">Movie not found</div>;
 
     return (
-        (loading) ? (<Spinner/>) : (
-            <div className="MoviePage">
-                <Movie movie={movie}/>
-                <h2>Discussion</h2>
-                <p>Create a post</p>
-                <PostList posts={posts} loading={false} />
-            </div>
-        )
+        <div className="MoviePage">
+            <Movie movie={movie}/>
+            <h2>Discussion</h2>
+            <p>Create a post</p>
+            <PostList posts={posts} loading={false} />
+        </div>
     );
 }
