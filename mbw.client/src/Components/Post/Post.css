@@ -29,7 +29,10 @@
 }
 
 .author-name {
-    color: #5a8ab3;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
     font-weight: 600;
 }
 

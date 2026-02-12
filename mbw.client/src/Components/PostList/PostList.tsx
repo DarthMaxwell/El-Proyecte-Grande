@@ -2,39 +2,25 @@
 import "./PostList.css";
 import Spinner from "../Spinner/Spinner";
 import type { PostData } from "../../Types/Types";
-import { useEffect, useState } from "react";
 
 interface PostListProps {
     posts: PostData[];
     loading: boolean;
+    refetch: () => Promise<void>;
 }
 
-export default function PostList({ posts, loading }: PostListProps) {
-    const [visiblePosts, setVisiblePosts] = useState<PostData[]>(posts);
-
-    useEffect(() => {
-        setVisiblePosts(posts);
-    }, [posts]);
-
+export default function PostList({ posts, loading, refetch }: PostListProps) {
     if (loading) return <Spinner />;
-
-    const handleDeleted = (id: number) => {
-        setVisiblePosts((prev) => prev.filter((p) => p.Id !== id));
-    };
-
-    const handleUpdated = (updated: PostData) => {
-        setVisiblePosts((prev) => prev.map((p) => (p.Id === updated.Id ? updated : p)));
-    };
 
     return (
         <div className="PostList">
-            {visiblePosts.length > 0 ? (
-                visiblePosts.map((post) => (
+            {posts.length > 0 ? (
+                posts.map((post) => (
                     <Post
                         key={post.Id}
                         post={post}
-                        onDeleted={handleDeleted}
-                        onUpdated={handleUpdated}
+                        onDeleted={refetch}
+                        onUpdated={refetch}
                     />
                 ))
             ) : (

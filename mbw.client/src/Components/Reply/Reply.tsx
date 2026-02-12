@@ -9,26 +9,24 @@ interface ReplyProps {
     Content: string;
     onDeleted?: (replyId: number) => void;
     onUpdated?: (replyId: number, newContent: string) => void;
+    onChanged?: () => void
 }
 
 const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
     const { user, token } = useAuth();
 
-    const canEdit = !!user && (user.username === Username || user.role === "ADMIN");
-    const canDelete = canEdit;
-
-    const [deleting, setDeleting] = useState(false);
+    const canEdit = !!user && (user.username === Username);
+    const canDelete = canEdit || user?.role === "ADMIN";
+    
 
     const [editing, setEditing] = useState(false);
     const [text, setText] = useState(Content);
-    const [saving, setSaving] = useState(false);
 
     const deleteReply = async () => {
-        if (!token || !canDelete || deleting) return;
+        if (!token || !canDelete) return;
         if (!confirm("Delete this comment?")) return;
 
         try {
-            setDeleting(true);
 
             const res = await fetch(`/api/reply/${id}`, {
                 method: "DELETE",
@@ -36,24 +34,26 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
             });
 
             if (!res.ok) {
-                alert(await res.text());
+                alert(res.text());
                 return;
             }
 
             onDeleted?.(id);
-        } finally {
-            setDeleting(false);
+        } catch (err) {
+            console.error(err);
         }
     };
 
     const saveReply = async () => {
-        if (!token || !canEdit || saving) return;
+        if (!token || !canEdit) return;
 
         const trimmed = text.trim();
-        if (!trimmed) return;
+        if (!trimmed) {
+            alert("The comment cannot be empty");
+            return;
+        }
 
         try {
-            setSaving(true);
 
             const res = await fetch("/api/reply", {
                 method: "PUT",
@@ -65,14 +65,14 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
             });
 
             if (!res.ok) {
-                alert(await res.text());
+                alert(res.text());
                 return;
             }
 
             onUpdated?.(id, trimmed);
             setEditing(false);
-        } finally {
-            setSaving(false);
+        } catch (err) {
+            console.error(err);
         }
     };
 
@@ -92,14 +92,14 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
                                 <button className="edit-reply-btn" onClick={() => setEditing(true)}>
                                     Edit
                                 </button>
-                                <button className="delete-reply-btn" onClick={deleteReply} disabled={deleting}>
-                                    {deleting ? "Deleting..." : "Delete"}
+                                <button className="delete-reply-btn" onClick={deleteReply}>
+                                    Delete
                                 </button>
                             </>
                         ) : (
                             <>
-                                <button className="save-reply-btn" onClick={saveReply} disabled={saving}>
-                                    {saving ? "Saving..." : "Save"}
+                                <button className="save-reply-btn" onClick={saveReply}>
+                                    Save
                                 </button>
                                 <button
                                     className="cancel-reply-btn"
@@ -107,7 +107,6 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
                                         setText(Content);
                                         setEditing(false);
                                     }}
-                                    disabled={saving}
                                 >
                                     Cancel
                                 </button>

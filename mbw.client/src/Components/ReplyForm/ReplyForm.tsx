@@ -11,17 +11,18 @@ interface ReplyFormProps {
 export default function ReplyForm({ closeForm, postId, onCreated }: ReplyFormProps) {
     const { token } = useAuth();
     const [content, setContent] = useState("");
-    const [posting, setPosting] = useState(false);
 
     const submitReply = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!token || posting) return;
+        if (!token) return;
 
         const trimmed = content.trim();
-        if (!trimmed) return;
+        if (!trimmed) {
+            alert("Cannot be empty");
+            return;
+        }
 
         try {
-            setPosting(true);
 
             const res = await fetch("/api/reply", {
                 method: "POST",
@@ -36,15 +37,15 @@ export default function ReplyForm({ closeForm, postId, onCreated }: ReplyFormPro
             });
 
             if (!res.ok) {
-                alert(await res.text());
+                alert(res.text());
                 return;
             }
 
             setContent("");
             onCreated?.(); 
             closeForm();     
-        } finally {
-            setPosting(false);
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -66,11 +67,11 @@ export default function ReplyForm({ closeForm, postId, onCreated }: ReplyFormPro
                 </div>
 
                 <div className="form-actions">
-                    <button type="submit" className="submit-btn" disabled={posting}>
-                        {posting ? "Posting..." : "Post Comment"}
+                    <button type="submit" className="submit-btn">
+                        Post
                     </button>
 
-                    <button type="button" className="cancel-btn" onClick={closeForm} disabled={posting}>
+                    <button type="button" className="cancel-btn" onClick={closeForm}>
                         Cancel
                     </button>
                 </div>

@@ -1,6 +1,6 @@
 import Movie from "../../Components/Movie/Movie";
 import PostList from "../../Components/PostList/PostList";
-import {useParams} from "react-router-dom";
+import {NavLink, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
 import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
@@ -10,9 +10,8 @@ export default function MoviePage() {
     const [movie, setMovie] = useState<MovieData | null>(null);
     const [posts, setPosts] = useState<PostData[]>([]);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function loadMovieAndPosts() {
+    
+        const refetch = async () => {
             if (!movieId) return;
             setLoading(true);
 
@@ -51,8 +50,8 @@ export default function MoviePage() {
                 setLoading(false);
             }
         }
-
-        loadMovieAndPosts();
+        useEffect(() => {
+        refetch();
     }, [movieId]);
 
     if (!movie) {
@@ -63,9 +62,18 @@ export default function MoviePage() {
         (loading) ? (<Spinner/>) : (
             <div className="MoviePage">
                 <Movie movie={movie}/>
-                <h2>Discussion</h2>
-                <p>Create a post</p>
-                <PostList posts={posts} loading={false} />
+                <h2 >Discussion</h2>
+                <NavLink
+                    to="/posts/new"
+                    className={({ isActive }) => `nav-link ${isActive ? "active" : ""}`}
+                    style={() => ({
+                        color: "black",
+                    })
+                }
+                >
+                    Create a post
+                </NavLink>
+                <PostList posts={posts} loading={false} refetch={refetch} />
             </div>
         )
     );

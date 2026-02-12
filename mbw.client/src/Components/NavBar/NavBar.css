@@ -28,7 +28,7 @@
 .brand {
     display: inline-flex;
     align-items: center;
-    gap: 10px;
+    gap: 15px;
     text-decoration: none;
     color: rgba(255,255,255,0.92);
     font-weight: 800;
@@ -81,7 +81,7 @@
     gap: 8px;
 }
 .navbar-spacer {
-    margin-left: auto;
+    margin-left: inherit;
 }
 
 /* ====== Links ====== */

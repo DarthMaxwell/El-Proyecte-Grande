@@ -14,22 +14,18 @@ interface PostProps {
 export default function Post({ post, onDeleted, onUpdated }: PostProps) {
     const { user, token } = useAuth();
 
-    const canEdit = !!user && (user.username === post.Username || user.role === "ADMIN");
-    const canDelete = canEdit;
-
-    const [deleting, setDeleting] = useState(false);
-
+    const canEdit = !!user && (user.username === post.Username);
+    const canDelete = canEdit || user?.role ==="ADMIN";
+    
     const [editing, setEditing] = useState(false);
     const [title, setTitle] = useState(post.Title);
     const [content, setContent] = useState(post.Content);
-    const [saving, setSaving] = useState(false);
 
     const deletePost = async () => {
-        if (!token || !canDelete || deleting) return;
+        if (!token || !canDelete) return;
         if (!confirm("Are you sure you want to delete?")) return;
 
         try {
-            setDeleting(true);
 
             const response = await fetch(`/api/posts/${post.Id}`, {
                 method: "DELETE",
@@ -37,25 +33,26 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
             });
 
             if (!response.ok) {
-                alert(await response.text());
+                alert(response.text());
                 return;
             }
-
             onDeleted?.(post.Id);
-        } finally {
-            setDeleting(false);
+        } catch (err) {
+            console.error(err);
         }
     };
 
     const savePost = async () => {
-        if (!token || !canEdit || saving) return;
+        if (!token || !canEdit) return;
 
         const t = title.trim();
         const c = content.trim();
-        if (!t || !c) return;
+        if (!t || !c) {
+            alert("You need to have content and a title");
+            return;
+        }
 
         try {
-            setSaving(true);
 
             const res = await fetch("/api/posts", {
                 method: "PUT",
@@ -67,7 +64,7 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
             });
 
             if (!res.ok) {
-                alert(await res.text());
+                alert(res.text());
                 return;
             }
             
@@ -75,8 +72,8 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
             onUpdated?.(updated);
 
             setEditing(false);
-        } finally {
-            setSaving(false);
+        } catch (error) {
+            console.log(error);
         }
     };
 
@@ -90,7 +87,6 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                         className="post-edit-title"
                         value={title}
                         onChange={(e) => setTitle(e.target.value)}
-                        disabled={saving}
                     />
                 )}
 
@@ -102,14 +98,14 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                                     Edit
                                 </button>
 
-                                <button className="delete-post-btn" onClick={deletePost} disabled={deleting}>
-                                    {deleting ? "Deleting..." : "Delete"}
+                                <button className="delete-post-btn" onClick={deletePost} >
+                                    Delete
                                 </button>
                             </>
                         ) : (
                             <>
-                                <button className="save-post-btn" onClick={savePost} disabled={saving}>
-                                    {saving ? "Saving..." : "Save"}
+                                <button className="save-post-btn" onClick={savePost}>
+                                    Save
                                 </button>
 
                                 <button
@@ -119,7 +115,6 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                                         setContent(post.Content);
                                         setEditing(false);
                                     }}
-                                    disabled={saving}
                                 >
                                     Cancel
                                 </button>
@@ -158,7 +153,6 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                             className="post-edit-content"
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            disabled={saving}
                         />
                     </div>
                 )}
