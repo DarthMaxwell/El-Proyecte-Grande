@@ -16,7 +16,7 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
     const { user, token } = useAuth();
 
     const canEdit = !!user && (user.username === Username);
-    const canDelete = canEdit || user?.role === "ADMIN";
+    const canDelete = canEdit || user?.role === "1";
     
 
     const [editing, setEditing] = useState(false);
@@ -85,13 +85,15 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
                     </Link>
                 </div>
 
-                {canEdit && (
+                {canDelete && (
                     <div className="reply-actions">
                         {!editing ? (
                             <>
+                                {canEdit && (
                                 <button className="edit-reply-btn" onClick={() => setEditing(true)}>
                                     Edit
                                 </button>
+                                    )}
                                 <button className="delete-reply-btn" onClick={deleteReply}>
                                     Delete
                                 </button>
