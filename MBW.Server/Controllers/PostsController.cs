@@ -111,7 +111,8 @@ public class PostsController : ControllerBase
             
             if (u == null || (u.Name != res.Username && u.Role != Roles.ADMIN))
                 return Unauthorized("This is not your post");
-            
+
+            res.Title = post.Title;
             res.Content = post.Content;
             _dbContext.Posts.Update(res);
             await _dbContext.SaveChangesAsync();

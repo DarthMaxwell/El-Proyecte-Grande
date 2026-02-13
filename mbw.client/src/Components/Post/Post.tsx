@@ -3,31 +3,34 @@ import ReplyList from "../ReplyList/ReplyList";
 import { Link } from "react-router-dom";
 import type { PostData } from "../../Types/Types";
 import { useAuth } from "../../Authenticate/AuthContext";
-import { useState } from "react";
+import {useEffect, useState} from "react";
 
 interface PostProps {
     post: PostData;
-    onDeleted?: (postId: number) => void;
-    onUpdated?: (updated: PostData) => void;
+    onChanged?: () => void;
+    onDeleted?: () => void;
 }
 
-export default function Post({ post, onDeleted, onUpdated }: PostProps) {
+export default function Post({ post, onChanged, onDeleted }: PostProps) {
     const { user, token } = useAuth();
 
     const canEdit = !!user && (user.username === post.Username);
     const canDelete = canEdit || user?.role == "1";
-    
-    
+
+
     const [editing, setEditing] = useState(false);
     const [title, setTitle] = useState(post.Title);
     const [content, setContent] = useState(post.Content);
+    useEffect(() => {
+        setTitle(post.Title);
+        setContent(post.Content);
+    }, [post.Id,post.Title,post.Content]);
 
     const deletePost = async () => {
         if (!token || !canDelete) return;
         if (!confirm("Are you sure you want to delete?")) return;
 
         try {
-            
             const response = await fetch(`/api/posts/${post.Id}`, {
                 method: "DELETE",
                 headers: { Authorization:`Bearer ${token.trim()}`},
@@ -38,7 +41,9 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                 return;
             }
 
-            onDeleted?.(post.Id);
+            setEditing(false);
+            onDeleted?.();
+            onChanged?.();
         } catch (error) {
             console.error(error);
         }
@@ -69,13 +74,11 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                 alert(await res.text());
                 return;
             }
+            setEditing(false);
+            onChanged?.();
 
-            const updated: PostData = { ...post, Title: t, Content: c };
-            onUpdated?.(updated);
-            
-            
         } catch(error) {
-           console.log(error);
+            console.log(error);
         }
     };
 
@@ -83,9 +86,9 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
         <div className="post">
             <div className="post-header">
                 {!editing ? (
-                            <Link to={`/post/${post.Id}`} className="username-link">
-                                <h1 className="post-title">{post.Title}</h1>
-                            </Link>
+                    <Link to={`/post/${post.Id}`} className="username-link">
+                        <h1 className="post-title">{title}</h1>
+                    </Link>
                 ) : (
                     <input
                         className="post-edit-title"
@@ -99,10 +102,10 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                         {!editing ? (
                             <>
                                 {canEdit && (
-                                <button className="edit-post-btn" onClick={() => setEditing(true)}>
-                                    Edit
-                                </button>
-                                    )}
+                                    <button className="edit-post-btn" onClick={() => setEditing(true)}>
+                                        Edit
+                                    </button>
+                                )}
                                 <button className="delete-post-btn" onClick={deletePost}>
                                     Delete
                                 </button>
@@ -147,7 +150,7 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
 
             <div className="post-text">
                 {!editing ? (
-                    <p>{post.Content}</p>
+                    <p>{content}</p>
                 ) : (
                     <div className="post-edit-field">
                         <label className="post-edit-label" htmlFor={`post-content-${post.Id}`}>
@@ -162,9 +165,7 @@ export default function Post({ post, onDeleted, onUpdated }: PostProps) {
                     </div>
                 )}
             </div>
-
-
-
+            
             <ReplyList ParentId={post.Id} />
         </div>
     );
