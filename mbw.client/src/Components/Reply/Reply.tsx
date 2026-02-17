@@ -1,7 +1,8 @@
 ﻿import "./Reply.css";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../Authenticate/AuthContext.tsx";
-import { useState } from "react";
+import {useEffect, useState} from "react";
+
 
 interface ReplyProps {
     id: number;
@@ -12,33 +13,37 @@ interface ReplyProps {
     onChanged?: () => void
 }
 
-const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
+const Reply = ({ id, Username, Content, onChanged, onDeleted, onUpdated }: ReplyProps) => {
     const { user, token } = useAuth();
 
     const canEdit = !!user && (user.username === Username);
-    const canDelete = canEdit || user?.role === "1";
+    const canDelete = canEdit || user?.role == "1";
     
 
     const [editing, setEditing] = useState(false);
     const [text, setText] = useState(Content);
+    useEffect(() => {
+        setText(Content);
+    }, [Content]);
 
     const deleteReply = async () => {
         if (!token || !canDelete) return;
         if (!confirm("Delete this comment?")) return;
 
         try {
-
             const res = await fetch(`/api/reply/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
 
             if (!res.ok) {
-                alert(res.text());
+                alert(await res.text());
                 return;
             }
 
             onDeleted?.(id);
+            onChanged?.();
+            setEditing(false);
         } catch (err) {
             console.error(err);
         }
@@ -70,6 +75,7 @@ const Reply = ({ id, Username, Content, onDeleted, onUpdated }: ReplyProps) => {
             }
 
             onUpdated?.(id, trimmed);
+            onChanged?.();
             setEditing(false);
         } catch (err) {
             console.error(err);

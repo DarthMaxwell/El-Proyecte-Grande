@@ -18,9 +18,8 @@ export default function CreatePostPage() {
     const [loadingMovies, setLoadingMovies] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string>("");
-
-    useEffect(() => {
-        async function loadMovies() {
+    
+        const refetch = async () => {
             setLoadingMovies(true);
             setError("");
 
@@ -29,17 +28,17 @@ export default function CreatePostPage() {
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
-                setMovies(data.map((m: any) => ({ id: m.id, title: m.title })));
+                setMovies(data.map((m: any) => ({id: m.id, title: m.title})));
             } catch (err) {
                 console.error("loadMovies failed:", err);
                 // fallback so you still have something to select
-                setMovies([{ id: 7, title: "Inception" }]);
+                setMovies([{id: 7, title: "Inception"}]);
             } finally {
                 setLoadingMovies(false);
             }
         }
-
-        loadMovies();
+        useEffect(() => {
+        refetch();
     }, []);
 
     async function submit(e: FormEvent) {

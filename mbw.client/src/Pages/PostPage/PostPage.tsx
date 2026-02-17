@@ -8,14 +8,18 @@ export default function PostPage() {
     const { postId } = useParams<{ postId: string }>();
     const [postData, setPostData] = useState<PostData | null>(null);
     const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        async function loadPost() {
+    
+        const refetch = async () => {
             setLoading(true);
             try {
                 const response = await fetch(`/api/posts/post/${postId}`);
+                if(response.status === 404) {
+                    setPostData(null);
+                    return;
+                }
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const post = await response.json();
+                
 
                 // Fetch movie data for the post
                 const movieResponse = await fetch(`/api/movie/${post.movieId}`);
@@ -37,12 +41,13 @@ export default function PostPage() {
                 setPostData(transformedPost);
             } catch (err) {
                 console.error("Failed to load post", err);
+                setPostData(null);
             } finally {
                 setLoading(false);
             }
-        }
-
-        loadPost();
+        };
+        useEffect(() => {
+        refetch();
     }, [postId]);
 
     if (loading) return <Spinner/>;
@@ -51,7 +56,8 @@ export default function PostPage() {
 
     return (
         <div className="PostPage">
-            <Post post={postData}/>
+            <Post post={postData}
+            onChanged={refetch}/>
         </div>
     );
 }
