@@ -19,8 +19,8 @@ export default function PostList({ posts, loading, refetch }: PostListProps) {
                     <Post
                         key={post.Id}
                         post={post}
+                        onChanged={refetch}
                         onDeleted={refetch}
-                        onUpdated={refetch}
                     />
                 ))
             ) : (
