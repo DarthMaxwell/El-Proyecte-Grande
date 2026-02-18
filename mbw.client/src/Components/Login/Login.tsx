@@ -76,8 +76,8 @@ function AuthForm({ setMessage }: AuthFormProps) {
 
         const endpoint =
             submitMode === "login"
-                ? "http://localhost:5132/api/Auth/login"
-                : "http://localhost:5132/api/Auth/register";
+                ? "/api/auth/login"
+                : "/api/auth/register";
 
         setIsSubmitting(true);
         try {

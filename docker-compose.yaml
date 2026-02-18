@@ -1,0 +1,48 @@
+services:
+  database:
+    image: postgres:18
+    container_name: database
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: adminpass1
+      POSTGRES_DB: mbwdatabase
+    volumes:
+      - MBWDatabase:/var/lib/postgresql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - mbw-network
+
+  backend:
+    build:
+      context: ./MBW.Server
+      dockerfile: Dockerfile
+    container_name: backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__DefaultConnection=Server=database;Port=5432;User Id=mbwuser;Password=mbwuser!;Database=mbwdatabase
+      - Jwt__Key=jfhtysgthisjdfhtsuednmdhfndhsgdfnweeyf3dh!
+      - CorsSettings__AllowedOrigins=http://localhost:3000
+    depends_on:
+      - database
+    networks:
+      - mbw-network
+
+  frontend:
+    build:
+      context: ./mbw.client
+      dockerfile: Dockerfile
+    container_name: frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - mbw-network
+
+volumes:
+  MBWDatabase:
+
+networks:
+  mbw-network:
+    driver: bridge

@@ -1,8 +1,5 @@
 <Solution>
-  <Project Path="mbw.client/mbw.client.esproj">
-    <Build />
-    <Deploy />
-  </Project>
+  <Project Path="mbw.client/mbw.client.esproj" />
   <Project Path="MBW.Server/MBW.Server.csproj" />
   <Project Path="ServerTests/ServerTests.csproj" />
 </Solution>

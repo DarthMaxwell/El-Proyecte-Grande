@@ -27,6 +27,7 @@ bld/
 [Bb]in/
 [Oo]bj/
 [Ll]og/
+out/
 
 # Visual Studio 2015 cache/options directory
 .vs/
@@ -40,6 +41,11 @@ bld/
 # NUNIT
 *.VisualState.xml
 TestResult.xml
+
+# Local development settings with secrets
+appsettings.Development.json
+appsettings.*.json
+!appsettings.json
 
 # Build Results of an ATL Project
 [Dd]ebugPS/
