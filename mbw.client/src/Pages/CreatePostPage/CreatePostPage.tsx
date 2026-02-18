@@ -5,8 +5,6 @@ import "./CreatePostPage.css";
 type MovieRef = { id: number; title: string };
 type Post = { id: number; movieId: number; title: string; body: string };
 
-const API_BASE = "http://localhost:5132";
-
 export default function CreatePostPage() {
     const navigate = useNavigate();
 
@@ -24,15 +22,13 @@ export default function CreatePostPage() {
             setError("");
 
             try {
-                const res = await fetch(`${API_BASE}/api/movie`);
+                const res = await fetch(`/api/movie`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
                 setMovies(data.map((m: any) => ({id: m.id, title: m.title})));
             } catch (err) {
                 console.error("loadMovies failed:", err);
-                // fallback so you still have something to select
-                setMovies([{id: 7, title: "Inception"}]);
             } finally {
                 setLoadingMovies(false);
             }
@@ -59,7 +55,7 @@ export default function CreatePostPage() {
 
         setSubmitting(true);
         try {
-            const res = await fetch(`${API_BASE}/api/posts`, {
+            const res = await fetch(`/api/posts`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
