@@ -62,8 +62,6 @@ export default function MoviePage() {
     return (
         <div className="MoviePage">
             <Movie movie={movie}/>
-            <h2>Discussion</h2>
-            <p>Create a post</p>
             <PostList posts={posts} loading={false} refetch={refetch}/>
         </div>
     );
