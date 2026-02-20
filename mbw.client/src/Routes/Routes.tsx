@@ -7,6 +7,7 @@ import MainPage from "../Pages/MainPage/MainPage.tsx";
 import LoginAndRegPage from "../Pages/LoginAndRegPage/LoginAndRegPage.tsx";
 import RequireAuth from "../Authenticate/RequireAuth.tsx";
 import PostPage from "../Pages/PostPage/PostPage.tsx";
+import PageNotFound from "../Pages/PageNotFound/PageNotFound.tsx";
 
 export const router = createBrowserRouter([
     {
@@ -22,6 +23,7 @@ export const router = createBrowserRouter([
                     <RequireAuth>
                         <CreatePostPage/>
                     </RequireAuth>},
+            {path: "*", element: <PageNotFound />}
         ]
     }
 ])

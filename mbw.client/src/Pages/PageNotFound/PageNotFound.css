@@ -1,0 +1,103 @@
+/* ---------- Page layout (WHITE background) ---------- */
+.nf404 {
+    min-height: 100vh;
+    display: grid;
+    place-items: center;
+    padding: clamp(2rem, 4vw, 4rem);
+    background: #ffffff;
+    color: #0f172a;
+}
+
+/* Wrapper (NOT a card) */
+.nf404__wrap {
+    width: min(1100px, 94vw);     /* big on desktop, still margins */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 1.6rem;
+    text-align: center;
+}
+
+/* Big title */
+.nf404__title {
+    margin: 0;
+    font-size: clamp(3.2rem, 5.2vw, 5.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: #0f172a;
+}
+
+/* Big image */
+.nf404__image {
+    width: min(6000px, 150%);
+    height: auto;
+    border-radius: 18px;                 /* keep a nice image shape */
+    border: 1px solid rgba(15, 23, 42, 0.10);
+    box-shadow: 0 18px 55px rgba(15, 23, 42, 0.14);
+    display: block;
+}
+
+/* Link (bigger but minimal, not a card) */
+.nf404__link {
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem 1.6rem;
+    border-radius: 14px;
+    transition: transform 120ms ease, background 120ms ease;
+}
+
+.nf404__link:hover {
+    background: rgba(15, 23, 42, 0.04);
+    transform: translateY(-2px);
+}
+
+.nf404__link:active {
+    transform: translateY(0);
+}
+
+.nf404__link:focus-visible {
+    outline: 3px solid rgba(59, 130, 246, 0.55);
+    outline-offset: 4px;
+}
+
+/* Link text group */
+.nf404__linkText {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-size: 26px;                     /* big link text */
+    color: #475569;
+}
+
+/* Your gradient name (namespaced) */
+.nf404__linkName {
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    font-weight: 800;
+}
+
+.nf404__link:hover .nf404__linkName {
+    text-decoration: underline;
+}
+
+.nf404__arrow {
+    color: #64748b;
+    font-size: 1.35em;
+    transform: translateY(-1px);
+}
+
+/* Mobile tweak */
+@media (max-width: 520px) {
+    .nf404__title {
+        font-size: clamp(2.4rem, 9vw, 3.3rem);
+    }
+
+    .nf404__linkText {
+        font-size: 20px;
+    }
+}
