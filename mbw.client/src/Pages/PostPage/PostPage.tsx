@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
 import type {PostData, MovieData} from "../../Types/Types.tsx";
+import "./PostPage.css"
 
 export default function PostPage() {
     const { postId } = useParams<{ postId: string }>();
@@ -52,7 +53,7 @@ export default function PostPage() {
 
     if (loading) return <Spinner/>;
 
-    if (!postData) return <div className="PostPage">Post not found</div>;
+    if (!postData) return <div className="no-post">Post not found</div>;
 
     return (
         <div className="PostPage">
