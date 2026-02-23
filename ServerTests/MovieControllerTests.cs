@@ -14,7 +14,6 @@ public class MovieControllerTests
 {
     private static MBDBContext CreateDb()
     {
-        // Need a new db name for every test - using TestContext.CurrentContext.Test.ID
         var options = new DbContextOptionsBuilder<MBDBContext>()
             .UseInMemoryDatabase(TestContext.CurrentContext.Test.ID)
             .Options;
