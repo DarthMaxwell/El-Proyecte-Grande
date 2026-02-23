@@ -3,9 +3,6 @@ using MBW.Server.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi;
-using Scalar.AspNetCore;
-
 
 var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -13,7 +10,6 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<MBDBContext>(options =>
     options.UseNpgsql(connectionString));
 builder.Services.AddControllers();
-//builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<JWTService>();
 
@@ -33,27 +29,6 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddOpenApi(options =>
-{
-    options.AddDocumentTransformer((document, context, cancellationToken) =>
-    {
-        // Add security scheme
-        document.Components ??= new Microsoft.OpenApi.OpenApiComponents();
-        document.Components.SecuritySchemes = new Dictionary<string, IOpenApiSecurityScheme>
-        {
-            ["Bearer"] = new Microsoft.OpenApi.OpenApiSecurityScheme
-            {
-                Type = Microsoft.OpenApi.SecuritySchemeType.Http,
-                Scheme = "bearer",
-                BearerFormat = "JWT",
-                Description = "Enter your JWT token"
-            }
-        };
-
-        return Task.CompletedTask;
-    });
-});
-
 builder.Services.AddAuthorization();
 
 builder.Services.AddCors(options =>
@@ -69,22 +44,7 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseDefaultFiles();
-app.MapStaticAssets();
-
-if (app.Environment.IsDevelopment())
-{
-    // Map OpenAPI endpoint
-    app.MapOpenApi();
-    
-    // Add Scalar UI
-    app.MapScalarApiReference(options =>
-    {
-        options
-            .WithTitle("MBW API")
-            .WithTheme(ScalarTheme.Purple)
-            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
-    });
-}
+app.UseStaticFiles();
 
 using (var scope = app.Services.CreateScope())
 {
