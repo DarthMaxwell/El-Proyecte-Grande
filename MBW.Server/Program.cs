@@ -5,7 +5,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Scalar.AspNetCore;
-
+using Azure.Identity;
+using Azure.Core;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
