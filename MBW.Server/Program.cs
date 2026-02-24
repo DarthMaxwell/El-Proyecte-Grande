@@ -8,10 +8,35 @@ using Scalar.AspNetCore;
 
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-builder.Services.AddDbContext<MBDBContext>(options =>
-    options.UseNpgsql(connectionString));
+if (builder.Environment.IsDevelopment())
+{
+    // Local dev — plain connection string with password
+    var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+    builder.Services.AddDbContext<MBDBContext>(options =>
+        options.UseNpgsql(connectionString));
+}
+else
+{
+    // Azure — Managed Identity token auth, no password
+    builder.Services.AddNpgsqlDataSource(
+        builder.Configuration.GetConnectionString("DefaultConnection"),
+        dataSourceBuilder =>
+        {
+            dataSourceBuilder.UsePeriodicPasswordProvider(async (_, ct) =>
+            {
+                var credential = new DefaultAzureCredential();
+                var token = await credential.GetTokenAsync(
+                    new TokenRequestContext(["https://ossrdbms-aad.database.windows.net/.default"]), ct);
+                return token.Token;
+            },
+            TimeSpan.FromHours(1),
+            TimeSpan.FromSeconds(10));
+        });
+
+    builder.Services.AddDbContext<MBDBContext>(options =>
+        options.UseNpgsql());
+}
 builder.Services.AddControllers();
 //builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
