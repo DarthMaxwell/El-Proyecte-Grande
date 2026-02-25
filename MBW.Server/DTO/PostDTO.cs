@@ -6,6 +6,11 @@ public class PostDTO
 {
     [Required]
     public int Id { get; set; }
+    
+    [Required]
+    [MinLength(1)]
+    [MaxLength(100)]
+    public string Title { get; set; }
 
     [Required]
     [MinLength(1)]

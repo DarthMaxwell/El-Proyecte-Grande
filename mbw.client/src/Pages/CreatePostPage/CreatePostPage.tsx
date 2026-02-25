@@ -5,8 +5,6 @@ import "./CreatePostPage.css";
 type MovieRef = { id: number; title: string };
 type Post = { id: number; movieId: number; title: string; body: string };
 
-const API_BASE = "http://localhost:5132";
-
 export default function CreatePostPage() {
     const navigate = useNavigate();
 
@@ -18,28 +16,25 @@ export default function CreatePostPage() {
     const [loadingMovies, setLoadingMovies] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string>("");
-
-    useEffect(() => {
-        async function loadMovies() {
+    
+        const refetch = async () => {
             setLoadingMovies(true);
             setError("");
 
             try {
-                const res = await fetch(`${API_BASE}/api/movie`);
+                const res = await fetch(`/api/movie`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
-                setMovies(data.map((m: any) => ({ id: m.id, title: m.title })));
+                setMovies(data.map((m: any) => ({id: m.id, title: m.title})));
             } catch (err) {
                 console.error("loadMovies failed:", err);
-                // fallback so you still have something to select
-                setMovies([{ id: 7, title: "Inception" }]);
             } finally {
                 setLoadingMovies(false);
             }
         }
-
-        loadMovies();
+        useEffect(() => {
+        refetch();
     }, []);
 
     async function submit(e: FormEvent) {
@@ -60,7 +55,7 @@ export default function CreatePostPage() {
 
         setSubmitting(true);
         try {
-            const res = await fetch(`${API_BASE}/api/posts`, {
+            const res = await fetch(`/api/posts`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -75,7 +70,7 @@ export default function CreatePostPage() {
 
             if (res.ok) {
                 const created: Post = await res.json();
-                navigate(`/posts/${created.id}`);
+                navigate(`/post/${created.id}`);
                 return;
             }
 

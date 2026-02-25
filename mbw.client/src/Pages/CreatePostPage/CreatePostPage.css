@@ -68,7 +68,7 @@
 .cp-input {
     width: 100%;
     box-sizing: border-box;
-
+    
     padding: 12px 12px;
     border-radius: 10px;
     border: 1px solid #d6d6d6;
@@ -79,7 +79,7 @@
 }
 
 .cp-textarea {
-    resize: vertical;
+    resize: none;
     min-height: 140px;
 }
 
@@ -116,8 +116,9 @@
 .cp-button {
     padding: 12px 16px;
     border-radius: 10px;
-    border: 1px solid #7ee1f5;
-    background: #a1eafb;
+    border: 1px solid;
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
+    color: rgba(255,255,255,0.92);
     cursor: pointer;
     font-weight: 800;
     font-size: 14px;
@@ -126,9 +127,8 @@
 }
 
 .cp-button:hover {
-    background: #8ed9ea;
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
-    transform: translateY(-1px);
+    transform: translateY(-3px);
 }
 
 .cp-button:active {

@@ -18,6 +18,10 @@ export default defineConfig({
         target: "http://localhost:5132",
         secure: false,
       },
+      "^/api/auth": {
+        target: "http://localhost:5132",
+        secure: false,
+      },
     },
   },
 })

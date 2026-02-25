@@ -34,3 +34,79 @@
     all: unset;
     cursor: pointer;
 }
+.reply-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.reply-header .comment-user {
+    margin-bottom: 0; /* header controls spacing now */
+}
+
+.delete-reply-btn {
+    border: 1px solid rgba(231, 76, 60, 0.8);
+    background: transparent;
+    color: rgba(231, 76, 60, 0.95);
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.delete-reply-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+.reply-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.reply-edit-textarea {
+    width: 100%;
+    min-height: 90px;
+    border-radius: 10px;
+    padding: 10px;
+    border: 1px solid rgba(0,0,0,0.15);
+    font-size: 15px;
+}
+.edit-reply-btn,
+.save-reply-btn,
+.cancel-reply-btn {
+    background: linear-gradient(135deg, rgba(124,58,237,0.95), rgba(59,130,246,0.95));
+    color: #fff;
+    border: none;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.edit-reply-btn:hover,
+.save-reply-btn:hover,
+.cancel-reply-btn:hover {
+    opacity: 0.92;
+}
+
+.edit-reply-btn:disabled,
+.save-reply-btn:disabled,
+.cancel-reply-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.cancel-reply-btn {
+    background: transparent;
+    border: 1px solid rgba(59,130,246,0.75);
+    color: rgba(59,130,246,0.95);
+}
+.cancel-reply-btn:hover {
+    background: rgba(59,130,246,0.08);
+    opacity: 1;
+}
+

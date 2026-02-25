@@ -1,0 +1,24 @@
+appsettings.Development.json
+
+# Build outputs
+bin/
+obj/
+out/
+
+# Docker files themselves
+Dockerfile
+.dockerignore
+
+# IDE / editor folders
+.vs/
+.vscode/
+*.user
+
+# Git
+.git/
+.gitignore
+.gitattributes
+
+# Logs & temp
+*.log
+*.tmp

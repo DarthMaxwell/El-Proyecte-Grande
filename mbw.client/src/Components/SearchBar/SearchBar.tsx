@@ -49,7 +49,6 @@ const SearchBar = () => {
         const trimmedQuery = searchQuery.trim();
 
         if (trimmedQuery && filteredSuggestions.length > 0) {
-            // Navigate to the first match
             navigate(`/movie/${filteredSuggestions[0].id}`);
             setSearchQuery('');
             setFilteredSuggestions([]);
@@ -76,15 +75,18 @@ const SearchBar = () => {
             {filteredSuggestions.length > 0 && (
                 <ul className="suggestions-list">
                     {filteredSuggestions.map((movie) => (
-                        <li
-                            key={movie.id}
-                            onClick={() => handleSuggestionClick(movie)}
-                            className="suggestion-item"
-                        >
-                            {movie.title}
+                        <li key={movie.id}>
+                            <button
+                                type="button"
+                                onClick={() => handleSuggestionClick(movie)}
+                                className="suggestion-item"
+                            >
+                                {movie.title}
+                            </button>
                         </li>
                     ))}
                 </ul>
+
             )}
         </div>
     );
