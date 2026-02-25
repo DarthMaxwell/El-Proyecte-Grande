@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../Login/Login.css";
 import type { AppMessage } from "../../Pages/LoginAndRegPage/LoginAndRegPage";
 import { useAuth } from "../../Authenticate/AuthContext";
+import { BASE_URL } from "../../config";
 
 type SubmitMode = "login" | "register";
 
@@ -76,8 +77,8 @@ function AuthForm({ setMessage }: AuthFormProps) {
 
         const endpoint =
             submitMode === "login"
-                ? "/api/auth/login"
-                : "/api/auth/register";
+                ? BASE_URL + "/api/auth/login"
+                : BASE_URL + "/api/auth/register";
 
         setIsSubmitting(true);
         try {

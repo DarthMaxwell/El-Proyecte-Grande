@@ -4,6 +4,7 @@ import "./ProfilePage.css";
 import PostList from "../../Components/PostList/PostList.tsx";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
 import type {MovieData, Post, PostData} from "../../Types/Types.tsx";
+import { BASE_URL } from "../../config.ts";
 
 export default function ProfilePage() {
     const { username } = useParams<{ username: string }>();
@@ -16,7 +17,7 @@ export default function ProfilePage() {
            setLoading(true);
 
             try {
-                const response = await fetch(`/api/posts/user/${username}`);
+                const response = await fetch(`${BASE_URL}/api/posts/user/${username}`);
 
                 if (!response.ok) {
                     if (response.status === 404) {
@@ -41,7 +42,7 @@ export default function ProfilePage() {
                 await Promise.all(
                     uniqueMovieIds.map(async (movieId) => {
                         try {
-                            const movieResponse = await fetch(`/api/movie/${movieId}`);
+                            const movieResponse = await fetch(`${BASE_URL}/api/movie/${movieId}`);
                             if (movieResponse.ok) {
                                 movies[movieId] = await movieResponse.json();
                             }

@@ -1,0 +1,1 @@
+export const BASE_URL = "https://mbw-api-dreudhe8eqdeh2et.norwayeast-01.azurewebsites.net/"

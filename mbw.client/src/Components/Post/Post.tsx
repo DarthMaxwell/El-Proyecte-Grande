@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import type { PostData } from "../../Types/Types";
 import { useAuth } from "../../Authenticate/AuthContext";
 import {useEffect, useState} from "react";
+import { BASE_URL } from "../../config";
 
 interface PostProps {
     post: PostData;
@@ -31,7 +32,7 @@ export default function Post({ post, onChanged, onDeleted }: PostProps) {
         if (!confirm("Are you sure you want to delete?")) return;
 
         try {
-            const response = await fetch(`/api/posts/${post.Id}`, {
+            const response = await fetch(`${BASE_URL}/api/posts/${post.Id}`, {
                 method: "DELETE",
                 headers: { Authorization:`Bearer ${token.trim()}`},
             });
@@ -61,7 +62,7 @@ export default function Post({ post, onChanged, onDeleted }: PostProps) {
 
         try {
 
-            const res = await fetch("/api/posts", {
+            const res = await fetch(BASE_URL + "/api/posts", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

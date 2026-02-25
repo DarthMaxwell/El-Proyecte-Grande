@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import "./MainPage.css";
 import PostList from "../../Components/PostList/PostList.tsx";
 import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
+import { BASE_URL } from "../../config.ts";
 
 function MainPage() {
     const [postData, setPostData] = useState<PostData[]>([]);
@@ -12,7 +13,7 @@ function MainPage() {
             setIsLoading(true);
             try {
                 // Get top 5 movies
-                const moviesResponse = await fetch("/api/movie/topfive");
+                const moviesResponse = await fetch(BASE_URL + "/api/movie/topfive");
                 if (!moviesResponse.ok) throw new Error(`HTTP ${moviesResponse.status}`);
                 const movies: MovieData[] = await moviesResponse.json();
 
@@ -21,7 +22,7 @@ function MainPage() {
 
                 for (const movie of movies) {
                     try {
-                        const postsResponse = await fetch(`/api/posts/${movie.id}`);
+                        const postsResponse = await fetch(`${BASE_URL}/api/posts/${movie.id}`);
                         if (postsResponse.ok) {
                             const posts: Post[] = await postsResponse.json();
 

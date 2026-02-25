@@ -4,6 +4,7 @@ import "./ReplyList.css";
 import ReplyForm from "../ReplyForm/ReplyForm";
 import type { Reply as R } from "../../Types/Types";
 import { useAuth } from "../../Authenticate/AuthContext";
+import { BASE_URL } from "../../config";
 
 interface ParentPost {
     ParentId: number;
@@ -16,7 +17,7 @@ export default function ReplyList({ ParentId }: ParentPost) {
 
     const refetch = async () => {
         try {
-            const res = await fetch(`/api/reply/${ParentId}`);
+            const res = await fetch(`${BASE_URL}/api/reply/${ParentId}`);
             if (!res.ok) {
                 console.error("Failed to fetch replies:", res.status);
                 setReplies([]);

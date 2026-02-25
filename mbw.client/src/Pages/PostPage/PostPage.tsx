@@ -4,6 +4,7 @@ import {useEffect, useState} from "react";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
 import type {PostData, MovieData} from "../../Types/Types.tsx";
 import "./PostPage.css"
+import { BASE_URL } from "../../config.ts";
 
 export default function PostPage() {
     const { postId } = useParams<{ postId: string }>();
@@ -13,7 +14,7 @@ export default function PostPage() {
         const refetch = async () => {
             setLoading(true);
             try {
-                const response = await fetch(`/api/posts/post/${postId}`);
+                const response = await fetch(`${BASE_URL}/api/posts/post/${postId}`);
                 if(response.status === 404) {
                     setPostData(null);
                     return;
@@ -23,7 +24,7 @@ export default function PostPage() {
                 
 
                 // Fetch movie data for the post
-                const movieResponse = await fetch(`/api/movie/${post.movieId}`);
+                const movieResponse = await fetch(`${BASE_URL}/api/movie/${post.movieId}`);
                 if (!movieResponse.ok) throw new Error(`HTTP ${movieResponse.status}`);
                 const movieData: MovieData = await movieResponse.json();
 

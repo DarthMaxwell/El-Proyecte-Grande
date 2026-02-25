@@ -1,6 +1,7 @@
 ﻿import "./ReplyForm.css";
 import { useState } from "react";
 import { useAuth } from "../../Authenticate/AuthContext"; 
+import { BASE_URL } from "../../config";
 
 interface ReplyFormProps {
     closeForm: () => void;
@@ -24,7 +25,7 @@ export default function ReplyForm({ closeForm, postId, onCreated }: ReplyFormPro
 
         try {
 
-            const res = await fetch("/api/reply", {
+            const res = await fetch(BASE_URL + "/api/reply", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

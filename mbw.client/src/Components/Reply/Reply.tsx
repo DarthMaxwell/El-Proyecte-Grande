@@ -2,6 +2,7 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../../Authenticate/AuthContext.tsx";
 import {useEffect, useState} from "react";
+import { BASE_URL } from "../../config.ts";
 
 
 interface ReplyProps {
@@ -31,7 +32,7 @@ const Reply = ({ id, Username, Content, onChanged, onDeleted, onUpdated }: Reply
         if (!confirm("Delete this comment?")) return;
 
         try {
-            const res = await fetch(`/api/reply/${id}`, {
+            const res = await fetch(`${BASE_URL}/api/reply/${id}`, {
                 method: "DELETE",
                 headers: { Authorization: `Bearer ${token}` },
             });
@@ -60,7 +61,7 @@ const Reply = ({ id, Username, Content, onChanged, onDeleted, onUpdated }: Reply
 
         try {
 
-            const res = await fetch("/api/reply", {
+            const res = await fetch(BASE_URL + "/api/reply", {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

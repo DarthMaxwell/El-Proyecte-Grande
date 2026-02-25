@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import "./CreatePostPage.css";
+import { BASE_URL } from "../../config";
 
 type MovieRef = { id: number; title: string };
 type Post = { id: number; movieId: number; title: string; body: string };
@@ -22,7 +23,7 @@ export default function CreatePostPage() {
             setError("");
 
             try {
-                const res = await fetch(`/api/movie`);
+                const res = await fetch(`${BASE_URL}/api/movie`);
                 if (!res.ok) throw new Error(`HTTP ${res.status}`);
 
                 const data = await res.json();
@@ -55,7 +56,7 @@ export default function CreatePostPage() {
 
         setSubmitting(true);
         try {
-            const res = await fetch(`/api/posts`, {
+            const res = await fetch(`${BASE_URL}/api/posts`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

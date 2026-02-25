@@ -1,6 +1,7 @@
 import React, {type FormEvent, useEffect, useState} from 'react';
 import "./SearchBar.css"
 import {useNavigate} from "react-router-dom";
+import { BASE_URL } from '../../config';
 
 interface MovieOptions {
     id: number;
@@ -16,7 +17,7 @@ const SearchBar = () => {
     useEffect(() => {
         async function loadAllMovieTitles() {
             try {
-                const response = await fetch("/api/movie");
+                const response = await fetch(BASE_URL +"/api/movie");
                 if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const movies: MovieOptions[] = await response.json();
 

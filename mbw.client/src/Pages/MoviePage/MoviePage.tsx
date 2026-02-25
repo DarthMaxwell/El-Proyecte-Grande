@@ -4,6 +4,7 @@ import {useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import Spinner from "../../Components/Spinner/Spinner.tsx";
 import type {Post, PostData, MovieData} from "../../Types/Types.tsx";
+import { BASE_URL } from "../../config.ts";
 
 export default function MoviePage() {
     const { movieId } = useParams<{ movieId: string }>();
@@ -17,13 +18,13 @@ export default function MoviePage() {
 
             try {
                 // Fetch movie data
-                const movieResponse = await fetch(`/api/movie/${movieId}`);
+                const movieResponse = await fetch(`${BASE_URL}/api/movie/${movieId}`);
                 if (!movieResponse.ok) throw new Error(`HTTP ${movieResponse.status}`);
                 const movieData: MovieData = await movieResponse.json();
                 setMovie(movieData);
 
                 // Fetch posts for this movie
-                const postsResponse = await fetch(`/api/posts/${movieId}`);
+                const postsResponse = await fetch(`${BASE_URL}/api/posts/${movieId}`);
                 if (postsResponse.ok) {
                     const postsData: Post[] = await postsResponse.json();
 
