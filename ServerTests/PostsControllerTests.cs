@@ -125,18 +125,5 @@ public class PostsControllerTests
         Assert.That(returnedPost.MovieId, Is.EqualTo(dto.MovieId));
         Assert.That(returnedPost.Username, Is.EqualTo("testuser"));
     }
-    
-    //CreatePost_InvalidMovieId_ReturnBadRequest
-    
-    //UpdatePost_ValidPostUserNotOwner_ReturnUnauthorized
-    //UpdatePost_NotValidPostUserNotOwner_ReturnNoContent
-    //UpdatePost_NotValidPostUserIsOwner_ReturnNoContent
-    //UpdatePost_ValidPostUserIsOwner_ReturnOkayAndPost
-    //UpdatePost_ValidPostUserNotOwnerButAdmin_ReturnOkayAndPost
-    
-    //DeletePost_ValidPostUserNotOwner_ReturnUnauthorized
-    //DeletePost_NotValidPostUserNotOwner_ReturnNoContent
-    //DeletePost_NotValidPostUserIsOwner_ReturnNoContent
-    //DeletePost_ValidPostUserIsOwner_ReturnOkayAndPost
-    //DeletePost_ValidPostUserNotOwnerButAdmin_ReturnOkayAndPost
+
 }

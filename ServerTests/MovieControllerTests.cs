@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage;
-using NUnit.Framework;
-using System;
 using MBW.Server.Controllers;
 using MBW.Server.Models;
 using MBW.Server.Utils;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace ServerTests;
 
