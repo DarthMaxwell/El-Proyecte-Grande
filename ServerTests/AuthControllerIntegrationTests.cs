@@ -1,16 +1,12 @@
 ﻿using System.Net;
 using Microsoft.AspNetCore.Hosting;
 using System.Net.Http.Json;
-using MBW.Server.Controllers;
 using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace ServerTests;
 
@@ -41,7 +37,6 @@ public class AuthControllerIntegrationTests
 
         Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Created));
 
-        // Check DB
         var scope = factory.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<MBDBContext>();
 
@@ -50,7 +45,70 @@ public class AuthControllerIntegrationTests
         Assert.That(user, Is.Not.Null);
     }
 
+    [Test]
+    public async Task Login_UserValidPassword_ReturnOkAndLoginResponse()
+    {
+        var factory = CreateFactory();
+        var client = factory.CreateClient();
 
-    //Login_UserValidPassword_ReturnOkAndLoginResponse
-    //Login_UserNotValidPassword_ReturnUnauthorized
+        var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MBDBContext>();
+
+        var password = "pwd123";
+        PasswordUtil.CreatePasswordHash(password, out string hash, out string salt);
+
+        db.Users.Add(new User
+        {
+            Name = "testuser",
+            Hash = hash,
+            Salt = salt,
+        });
+        await db.SaveChangesAsync();
+
+        var dto = new LoginRequestDTO
+        {
+            Username = "testuser",
+            Password = password
+        };
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", dto);
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.OK));
+
+        var loginResponse = await response.Content.ReadFromJsonAsync<LoginResponseDTO>();
+
+        Assert.That(loginResponse, Is.Not.Null);
+        Assert.That(loginResponse.Username, Is.EqualTo("testuser"));
+    }
+
+    [Test]
+    public async Task Login_UserNotValidPassword_ReturnUnauthorized()
+    {
+        var factory = CreateFactory();
+        var client = factory.CreateClient();
+
+        var scope = factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MBDBContext>();
+
+        var password = "movie123";
+        PasswordUtil.CreatePasswordHash(password, out string hash, out string salt);
+
+        db.Users.Add(new User
+        {
+            Name = "ilovemovies",
+            Hash = hash,
+            Salt = salt,
+        });
+        await db.SaveChangesAsync();
+
+        var dto = new LoginRequestDTO
+        {
+            Username = "ilovemovies",
+            Password = "movie321"
+        };
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", dto);
+
+        Assert.That(response.StatusCode, Is.EqualTo(HttpStatusCode.Unauthorized));
+    }
 }
