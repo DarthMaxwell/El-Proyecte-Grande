@@ -70,7 +70,6 @@ const NavBar = () => {
                         )}
                     </ul>
                 </div>
-x
                 <div className="navbar-right">
                     {!loading && !user && (
                         <NavLink to="/login" className="btn btn-primary" onClick={closeMenu}>
