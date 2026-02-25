@@ -1,4 +1,5 @@
 ﻿using MBW.Server.Controllers;
+using MBW.Server.DTO;
 using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
@@ -10,7 +11,6 @@ public class PostsControllerTests
 {
     private static MBDBContext CreateDb()
     {
-        // Need a new db name for every test - using TestContext.CurrentContext.Test.ID
         var options = new DbContextOptionsBuilder<MBDBContext>()
             .UseInMemoryDatabase(TestContext.CurrentContext.Test.ID)
             .Options;
@@ -49,12 +49,76 @@ public class PostsControllerTests
         
     }
     
-    //GetAllPostsForMovie_ValidMovieId_ReturnOkAndPostList
+    [Test]
+    public async Task GetAllPostsForMovie_ValidMovieId_ReturnOkAndPostList()
+    {
+        var db = CreateDb();
+        db.Movies.AddRange(
+            new Movie
+            {
+                Id = 1, ReleaseDate = new DateOnly(1994, 10, 14), Length = 142, Title = "The Shawshank Redemption",
+                Director = "Frank Darabont", Genre = "Drama",
+                Description = "Two imprisoned men bond over a number of years."
+            }
+        );
+        db.Posts.AddRange(
+            new Post
+            {
+                Id = 1, Title = "Test Title", Username = "simen", MovieId = 1, Content = "Absolutely amazing movie."
+            },
+            new Post
+            {
+                Id = 2, Title = "Another Test Title", Username = "admin", MovieId = 1, Content = "One of my favorite movies!"
+            }
+        );
+        await db.SaveChangesAsync();
+        var controller = new PostsController(db);
+        var result = await controller.GetAllPostsForMovie(1);
+        var ok = result.Result as OkObjectResult;
+        Assert.That(ok, Is.Not.Null);
+        var posts = ok.Value as List<Post>;
+        Assert.That(posts, Is.Not.Null);
+        Assert.That(posts.Count, Is.EqualTo(2));
+    }
     
-    //GetAllPostsForUser_ReturnOkAndPostList
-    //GetAllPostsForUser_NoUserPosts_ReturnsOkAndEmptyList
+    [Test]
+    public async Task CreatePost_ValidPost_ReturnCreatedAndPost()
+    {
+        var db = CreateDb();
+        db.Movies.AddRange(
+            new Movie
+            {
+                Id = 1, ReleaseDate = new DateOnly(1994, 10, 14), Length = 142, Title = "The Shawshank Redemption",
+                Director = "Frank Darabont", Genre = "Drama",
+                Description = "Two imprisoned men bond over a number of years."
+            }
+        );
+        await db.SaveChangesAsync();
+        var controller = new PostsController(db);
+        var dto = new CreatePostDTO
+        {
+            MovieId = 1, Title = "New Post", Content = "This is a new post."
+        };        
+
+        ActionResult<Post> result = await controller.CreatePost(dto);
+
+        // Assert
+        var created = result.Result as CreatedResult;
+        Assert.That(created, Is.Not.Null);
+
+        var returnedPost = created!.Value as Post;
+        Assert.That(returnedPost, Is.Not.Null);
+        Assert.That(returnedPost!.Title, Is.EqualTo(dto.Title));
+        Assert.That(returnedPost.Content, Is.EqualTo(dto.Content));
+        Assert.That(returnedPost.MovieId, Is.EqualTo(dto.MovieId));
+        Assert.That(returnedPost.Username, Is.EqualTo("simen"));
+
+        // Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
+        // var createdResult = result as CreatedAtActionResult;
+        // Assert.That(createdResult.Value, Is.TypeOf<Post>());
+        // Assert.That(((Post)createdResult.Value).Title, Is.EqualTo("New Post"));
+    }
     
-    //CreatePost_ValidPost_ReturnCreatedAndPost
     //CreatePost_InvalidMovieId_ReturnBadRequest
     
     
