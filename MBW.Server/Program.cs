@@ -9,8 +9,16 @@ using Scalar.AspNetCore;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<MBDBContext>(options =>
-    options.UseNpgsql(connectionString));
+if (builder.Environment.IsEnvironment("Testing"))
+{
+    builder.Services.AddDbContext<MBDBContext>(options =>
+        options.UseInMemoryDatabase("TestingDb"));
+}
+else
+{
+    builder.Services.AddDbContext<MBDBContext>(options =>
+        options.UseNpgsql(connectionString));
+}
 
 builder.Services.AddControllers();
 //builder.Services.AddOpenApi();
@@ -89,7 +97,10 @@ if (app.Environment.IsDevelopment())
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<MBDBContext>();
-    db.Database.Migrate();
+    if (!app.Environment.IsEnvironment("Testing"))
+    {
+        db.Database.Migrate();
+    }
 }
 
 app.UseHttpsRedirection();

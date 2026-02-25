@@ -22,7 +22,7 @@ public class ReplyControllerTests
     [Test]
     public async Task GetReplies_InvalidPostId_ReturnOkAndEmptyList()
     {
-        var db = ReplyControllerTests.CreateDb();
+        var db = CreateDb();
         var controller = new ReplyController(db);
         var result = await controller.GetReplies(1);
         var ok = result.Result as OkObjectResult;
@@ -34,7 +34,7 @@ public class ReplyControllerTests
     [Test]
     public async Task GetReplies_ValidPostId_ReturnOkAndPostList()
     {
-        var db = ReplyControllerTests.CreateDb();
+        var db = CreateDb();
         db.Posts.AddRange(
             new Post
             {

@@ -4,6 +4,8 @@ using MBW.Server.Models;
 using MBW.Server.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace ServerTests;
 
@@ -100,9 +102,19 @@ public class PostsControllerTests
             MovieId = 1, Title = "New Post", Content = "This is a new post."
         };        
 
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(new ClaimsIdentity(new[]
+                {
+                    new Claim(ClaimTypes.Name, "testuser")
+                }, "TestAuth"))
+            }
+        };
+
         ActionResult<Post> result = await controller.CreatePost(dto);
 
-        // Assert
         var created = result.Result as CreatedResult;
         Assert.That(created, Is.Not.Null);
 
@@ -111,16 +123,10 @@ public class PostsControllerTests
         Assert.That(returnedPost!.Title, Is.EqualTo(dto.Title));
         Assert.That(returnedPost.Content, Is.EqualTo(dto.Content));
         Assert.That(returnedPost.MovieId, Is.EqualTo(dto.MovieId));
-        Assert.That(returnedPost.Username, Is.EqualTo("simen"));
-
-        // Assert.That(result, Is.TypeOf<CreatedAtActionResult>());
-        // var createdResult = result as CreatedAtActionResult;
-        // Assert.That(createdResult.Value, Is.TypeOf<Post>());
-        // Assert.That(((Post)createdResult.Value).Title, Is.EqualTo("New Post"));
+        Assert.That(returnedPost.Username, Is.EqualTo("testuser"));
     }
     
     //CreatePost_InvalidMovieId_ReturnBadRequest
-    
     
     //UpdatePost_ValidPostUserNotOwner_ReturnUnauthorized
     //UpdatePost_NotValidPostUserNotOwner_ReturnNoContent
