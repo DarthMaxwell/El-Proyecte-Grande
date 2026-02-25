@@ -1,12 +1,12 @@
 {
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/api/*"]
+  },
   "routes": [
     {
       "route": "/api/*",
       "rewrite": "https://mbw-api-dreudhe8eqdeh2et.norwayeast-01.azurewebsites.net/api/*"
     }
-  ],
-  "navigationFallback": {
-    "rewrite": "/index.html",
-    "exclude": ["/api/*"]
-  }
+  ]
 }
