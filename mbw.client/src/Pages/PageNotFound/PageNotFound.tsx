@@ -10,10 +10,10 @@ export default function PageNotFound() {
                 <img className="nf404__image" src="/pagofinted.png" alt="Bogos Binted" />
 
                 <Link to="/" className="nf404__link">
-          <span className="nf404__linkText">
-            <span className="nf404__linkName">Main Page</span>
-            <span className="nf404__arrow" aria-hidden="true">→</span>
-          </span>
+                    <span className="nf404__linkText">
+                        <span className="nf404__linkName">Main Page</span>
+                        <span className="nf404__arrow" aria-hidden="true">→</span>
+                    </span>
                 </Link>
             </section>
         </main>
